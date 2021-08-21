@@ -1,0 +1,119 @@
+FORMAT: 1A
+
+# PHTemper API
+
+API for program PHTemper. Program can store temperatures with timestamps and work with them (add, update, delete).
+It can also show thw date period in which the temperatures were in certain range.
+
+# Group Temperatures
+
+## Temperature [/temperatures/{id}]
+
+Operations with a temperature.
+
++ Parameters
+
+    + id: 1 (number) - An unique identifier of the temperature.
+
++ Attributes (object)
+    + id: 1 (number)
+    + datetime: `2021-08-01T11:30` (string) - time stamp in format according to norm ISO8601
+    + temper: 25.4 (number) - temperature
+
+### Retrieve a Temperature [GET]
+
++ Response 200 (application/json)
+    + Attributes (Temperature)
+    
+### Retrieve a Non-existent Temperature [GET /temperatures/{id}]    
+
++ Parameters
+
+    + id: 60000 (number) - An non-existent identifier of the temperature.
+
++ Response 404    
+
+    
+### Update a Non-existent Temperature [PATCH /temperatures/{id}]
+
++ Parameters
+
+    + id: 60000 (number) - An non-existent identifier of the temperature.
+
++ Request Update temperature (application/json)
+    + Attributes (object)
+        + datetime: `2021-08-01T11:30` (string) - time stamp in format according to norm ISO8601
+        + temper: 25.4 (number) - temperature
+
++ Response 404
+
+### Delete a Temperature [DELETE]
+
++ Response 204
+    
+### Delete a Non-existent Temperature [DELETE /temperatures/{id}]    
+
++ Parameters
+
+    + id: 60000 (number) - An non-existent identifier of the temperature.
+
++ Response 404    
+
+
+## Temperatures [/temperatures]
+
+Operations with temperatures.
+
+### Retrieve All Temperatures [GET]
+
++ Response 200 (application/json)
+
+        [
+          {
+            "id": 1,
+            "datetime": "2021-08-01T11:30",
+            "temper": 25.4
+          },
+          {
+            "id": 2,
+            "datetime": "2021-07-28T20:02",
+            "temper": 13
+          }
+        ]
+
+### Add a Temperature [POST]
+
++ Request Add temperature (application/json)
+    + Attributes (object)
+        + datetime: `2021-08-01T11:30` (string, required) - time stamp in format according to norm ISO8601
+        + temper: 25.4 (number, required) - temperature
+
++ Response 201
+    + Attributes (Temperature)
+
+# Group Periods
+
+## Period No Matter the Time [/periods/period?lowTemp={lowTemp}&hiTemp={hiTemp}]
+
+Longest period (starting date and ending date) with all temperatures between lowTemp and hiTemp (included).
+
++ Parameters
+
+    + lowTemp: 15.2 (number)
+    + hiTemp: 23.6 (number)
+
++ Attributes (object)
+    + fromDate: `2021-07-31` (string) - date in format according to norm ISO8601
+    + toDate: `2021-08-01` (string) - date in format according to norm ISO8601
+
+### Retrieve a Period [GET]
+
++ Response 200 (application/json)
+    + Attributes (Period No Matter the Time)
+
++ Response 404    
+
+## Period Considering Time [/periods/periodTime?lowTemp={lowTemp}&hiTemp={hiTemp}&fromTime={fromTime}&toTime={toTime}]
+
+Longest period (starting date and ending date) with all temperatures between lowTemp and hiTemp (included).
+Only temperatures with time between fromTime and toTime (included) are considered, all others are ignored.
