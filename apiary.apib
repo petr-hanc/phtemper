@@ -3,7 +3,7 @@ FORMAT: 1A
 # PHTemper API
 
 API for program PHTemper. Program can store temperatures with timestamps and work with them (add, update, delete).
-It can also show thw date period in which the temperatures were in certain range.
+It can also show the date period in which the temperatures were in certain range.
 
 # Group Temperatures
 
@@ -17,7 +17,7 @@ Operations with a temperature.
 
 + Attributes (object)
     + id: 1 (number)
-    + datetime: `2021-08-01T11:30` (string) - time stamp in format according to norm ISO8601
+    + dateTime: `2021-08-01T11:30` (string) - time stamp in format according to norm ISO8601
     + temper: 25.4 (number) - temperature
 
 ### Retrieve a Temperature [GET]
@@ -31,8 +31,21 @@ Operations with a temperature.
 
     + id: 60000 (number) - An non-existent identifier of the temperature.
 
-+ Response 404    
++ Response 404   
 
+### Update a  Temperature [PATCH]
+
++ Parameters
+
+    + id: 1 (number) - An identifier of the temperature.
+
++ Request Update temperature (application/json)
+    + Attributes (object)
+        + datetime: `2021-08-01T12:40` (string) - time stamp in format according to norm ISO8601
+        + temper: 10.9 (number) - temperature
+
++ Response 200
+    + Attributes (Temperature)
     
 ### Update a Non-existent Temperature [PATCH /temperatures/{id}]
 
@@ -93,7 +106,7 @@ Operations with temperatures.
 
 # Group Periods
 
-## Period No Matter the Time [/periods/period?lowTemp={lowTemp}&hiTemp={hiTemp}]
+## Period [/periods/period?lowTemp={lowTemp}&hiTemp={hiTemp}]
 
 Longest period (starting date and ending date) with all temperatures between lowTemp and hiTemp (included).
 
@@ -109,7 +122,7 @@ Longest period (starting date and ending date) with all temperatures between low
 ### Retrieve a Period [GET]
 
 + Response 200 (application/json)
-    + Attributes (Period No Matter the Time)
+    + Attributes (Period)
 
 + Response 404    
 
@@ -117,3 +130,21 @@ Longest period (starting date and ending date) with all temperatures between low
 
 Longest period (starting date and ending date) with all temperatures between lowTemp and hiTemp (included).
 Only temperatures with time between fromTime and toTime (included) are considered, all others are ignored.
+
++ Parameters
+
+    + lowTemp: 15.2 (number)
+    + hiTemp: 23.6 (number)
+    + fromTime: `08:00` (string) time in format according to norm ISO8601
+    + toTime: `21:00` (string) time in format according to norm ISO8601
+
++ Attributes (object)
+    + fromDate: `2021-07-31` (string) - date in format according to norm ISO8601
+    + toDate: `2021-08-01` (string) - date in format according to norm ISO8601
+
+### Retrieve a Period [GET]
+
++ Response 200 (application/json)
+    + Attributes (Period)
+
++ Response 404
