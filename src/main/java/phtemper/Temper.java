@@ -14,7 +14,7 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "temper")
-public class Temper {
+public class Temper implements Comparable<Temper> {
     @Id
     @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id")
@@ -32,6 +32,10 @@ public class Temper {
 		super();
 		this.timeStamp = timeStamp;
 		this.temper = temper;
+	}
+    
+	public int compareTo (Temper temp) {
+		return this.timeStamp.compareTo(temp.timeStamp); 		
 	}
 
 }
