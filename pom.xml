@@ -14,8 +14,8 @@
 	<name>phtemper</name>
 	<description>working with temperature via REST API</description>
 	<properties>
-		<java.version>1.8</java.version>
-	</properties>
+	<java.version>1.8</java.version>
+</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-rest</artifactId>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-devtools</artifactId>
@@ -54,12 +54,21 @@
 			<artifactId>h2</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<!-- 
 		<dependency>
-			<groupId>com.fasterxml.jackson.core</groupId>
-			<artifactId>jackson-databind</artifactId>
+			<!-- For using JUnit4 with SpringBoot 2.4 and later -->
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hamcrest</groupId>
+					<artifactId>hamcrest-core</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-		 -->
+		<!-- <dependency> <groupId>com.fasterxml.jackson.core</groupId> 
+		<artifactId>jackson-databind</artifactId> 
+			</dependency> -->
 	</dependencies>
 
 	<build>
