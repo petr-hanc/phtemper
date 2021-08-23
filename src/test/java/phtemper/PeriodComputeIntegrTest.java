@@ -26,7 +26,7 @@ public class PeriodComputeIntegrTest {
 	@Test
 	public void testLongestPeriod() {
 		System.out.println(repository.findAll());
-		PeriodD period = periodCompute.longestPeriod(10F, 30F);
+		PeriodD period = periodCompute.longestPeriod(15.2F, 23.6F);
 		System.out.println(period);
 		fail("Not yet implemented");
 	}
