@@ -15,7 +15,6 @@ public class PeriodD  {
 	}
 
 	public PeriodD(LocalDate fromDate, LocalDate toDate) {
-		super();
 		this.fromDate = fromDate;
 		this.toDate = toDate;
 	}
