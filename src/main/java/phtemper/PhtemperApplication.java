@@ -20,9 +20,6 @@ public class PhtemperApplication implements CommandLineRunner {
 	
 	@Override
 	public void run(String... args) throws Exception {
-		System.out.println(repository.findAll());
-		PeriodD period = periodCompute.longestPeriod(10F, 30F);
-		System.out.println(period);
 		
 		//List<Temper> tempers = new ArrayList<Temper>();
 		//tempers.add(new Temper(LocalDateTime.parse("2021-08-01T10:05"), 20.3F));
