@@ -4,7 +4,7 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
-db/
+db_other/
 
 ### STS ###
 .apt_generated
