@@ -3,9 +3,11 @@ package phtemper.api;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,18 +36,17 @@ public class TemperaturesController {
 	
 	@PostMapping(consumes="application/json")
 	@ResponseStatus(HttpStatus.CREATED)
-	public Temper addTemper(@RequestBody Temper temper) {
-		return repository.save(temper);
+	public ResponseEntity<Temper> addTemper(@RequestBody Temper temper) {
+		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(temper));
 	}
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Temper> getTemper(@PathVariable("id") Long id) {
 		try {
-		System.out.println(repository.findAll());	// debug
-		Temper temper = repository.findById(id)
-				.orElseThrow(() -> new IllegalArgumentException("Invalid temperature id: " + id));
-		return ResponseEntity.ok(temper);
-		}
+			Temper temper = repository.findById(id)
+					.orElseThrow(() -> new IllegalArgumentException("Invalid temperature id: " + id));
+			return ResponseEntity.ok(temper);
+		} 
 		catch (IllegalArgumentException e) {
 			System.err.println(e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -64,6 +65,18 @@ public class TemperaturesController {
 			return ResponseEntity.ok(repository.save(temper));
 		}
 		catch (IllegalArgumentException e) {
+			System.err.println(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		}
+	}
+	
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> delTemper(@PathVariable("id") Long id) {
+		try {
+			repository.deleteById(id);
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		} 
+		catch (EmptyResultDataAccessException e) {
 			System.err.println(e.getMessage());
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
