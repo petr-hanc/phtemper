@@ -31,7 +31,7 @@ Operations with a temperature.
 
     + id: 60000 (number) - An non-existent identifier of the temperature.
 
-+ Response 404   
++ Response 400   
 
 ### Update a  Temperature [PATCH]
 
@@ -58,7 +58,7 @@ Operations with a temperature.
         + datetime: `2021-08-01T11:30` (string) - time stamp in format according to norm ISO8601
         + temper: 25.4 (number) - temperature
 
-+ Response 404
++ Response 400
 
 ### Delete a Temperature [DELETE]
 
@@ -70,7 +70,7 @@ Operations with a temperature.
 
     + id: 60000 (number) - An non-existent identifier of the temperature.
 
-+ Response 404    
++ Response 400    
 
 
 ## Temperatures [/temperatures]
@@ -124,7 +124,7 @@ Longest period (starting date and ending date) with all temperatures between low
 + Response 200 (application/json)
     + Attributes (Period)
 
-+ Response 404    
++ Response 400   
 
 ## Period Considering Time [/periods/periodTime?lowTemp={lowTemp}&hiTemp={hiTemp}&fromTime={fromTime}&toTime={toTime}]
 
@@ -147,4 +147,4 @@ Only temperatures with time between fromTime and toTime (included) are considere
 + Response 200 (application/json)
     + Attributes (Period)
 
-+ Response 404
++ Response 400
