@@ -3,6 +3,7 @@ package phtemper;
 import static org.junit.Assert.fail;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,10 +44,19 @@ public class PeriodComputeIntegrTest {
 
 	@Test
 	public void testLongestPeriod() {
+		System.out.println("testLongestPeriod");
 		System.out.println(repository.findAll());
 		PeriodD period = periodCompute.longestPeriod(15F, 25F);
 		System.out.println(period);
 		fail("Not yet implemented");
+	}
+	
+	@Test
+	public void testLongestPeriodWithTime() {
+		System.out.println("testLongestPeriodWithTime()");
+		//System.out.println(repository.findAll());
+		PeriodD period = periodCompute.longestPeriodWithTime(15F, 25F, LocalTime.parse("08:00"), LocalTime.parse("11:40"));		
+		System.out.println(period);
 	}
 	
 	/*
