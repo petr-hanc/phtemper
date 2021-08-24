@@ -19,10 +19,10 @@ public class PeriodCompute {
 	 * If no such temperature is found then returns null  */
 	public PeriodD longestPeriod(Float lowTemp, Float hiTemp) {
 		PeriodD periodMax = null;		// longest period in temperature range
-		long periodMaxLength = -1;		// length in days
+		Long periodMaxLength = -1L;		// length in days
 		Temper oldestInRange = null;
 		Temper newestInRange = null;
-		boolean withinPeriod = false;	// true if period was found and hasn't finished yet
+		Boolean withinPeriod = false;	// true if period was found and hasn't finished yet
 		
 		if (lowTemp == null || hiTemp == null || lowTemp > hiTemp)
 			return null;
@@ -38,25 +38,31 @@ public class PeriodCompute {
 				else 		// period continues
 					newestInRange = temper;
 			} else {	// temper. out of range
-				if (withinPeriod == true) {		// period has ended
-					PeriodD period = new PeriodD();
-					ChronoPeriod periodChrono;	// interval between dates
-					long periodLength = 0;		// length in days
-					period.setFromDate(oldestInRange.getTimeStamp().toLocalDate());
-					period.setToDate(newestInRange.getTimeStamp().toLocalDate());
-					periodChrono = Period.between(period.getFromDate(), period.getFromDate());
-					periodLength = periodChrono.get(ChronoUnit.DAYS);
-					if (periodLength > periodMaxLength) {	// this period has been the longest one
-						periodMax = period;
-						periodMaxLength = periodLength;
-					}
-					withinPeriod = false;
-					oldestInRange = null;
-					newestInRange = null;
-				}
+				if (withinPeriod == true) 
+					finishPeriod(oldestInRange, newestInRange, periodMaxLength, periodMax, withinPeriod);
 			}
 		}
+		if (withinPeriod == true) 
+			finishPeriod(oldestInRange, newestInRange, periodMaxLength, periodMax, withinPeriod);
 		return periodMax;
 	}
+	
+	private void finishPeriod(Temper oldestInRange, Temper newestInRange, Long periodMaxLength, PeriodD periodMax, Boolean withinPeriod) {
+		PeriodD period = new PeriodD();
+		ChronoPeriod periodChrono;	// interval between dates
+		long periodLength = 0;		// length in days
+		period.setFromDate(oldestInRange.getTimeStamp().toLocalDate());
+		period.setToDate(newestInRange.getTimeStamp().toLocalDate());
+		periodChrono = Period.between(period.getFromDate(), period.getToDate());
+		periodLength = periodChrono.get(ChronoUnit.DAYS);
+		if (periodLength > periodMaxLength) {	// this period has been the longest one
+			periodMax = period;
+			periodMaxLength = periodLength;
+		}
+		withinPeriod = false;
+		oldestInRange = null;
+		newestInRange = null;
+	}
+	
 
 }	// class
