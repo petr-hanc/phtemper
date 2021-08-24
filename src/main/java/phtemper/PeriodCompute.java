@@ -5,6 +5,7 @@ import java.time.chrono.ChronoPeriod;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -21,9 +22,17 @@ public class PeriodCompute {
 	private Temper oldestInRange, newestInRange;
 	private boolean withinPeriod;	// true if period was found and hasn't finished yet
 
-	/** Returns longest period (starting date and ending date) with all temperatures between lowTemp and hiTemp (included).
+	/** Returns longest period (starting date and ending date) in temperatures stored in repository 
+	 * with all temperatures between lowTemp and hiTemp (included).
 	 * If no such temperature is found then returns null  */
 	public PeriodD longestPeriod(Float lowTemp, Float hiTemp) {
+		ArrayList<Temper> temperatures = new ArrayList<Temper>(repository.findAll());
+		return longestPeriodInList(lowTemp, hiTemp, temperatures);
+	}
+	
+	/** Returns longest period (starting date and ending date) in temperatures list with all temperatures between lowTemp and hiTemp (included).
+	 * If no such temperature is found then returns null  */
+	private PeriodD longestPeriodInList(Float lowTemp, Float hiTemp, List<Temper> temperatures) {
 		periodMax = null;
 		periodMaxLength = -1L;
 		oldestInRange = null;
@@ -31,7 +40,7 @@ public class PeriodCompute {
 		withinPeriod = false;
 		if (lowTemp == null || hiTemp == null || lowTemp > hiTemp)
 			return null;
-		ArrayList<Temper> sortedTemps = new ArrayList<Temper>(repository.findAll());
+		ArrayList<Temper> sortedTemps = new ArrayList<Temper>(temperatures);
 		Collections.sort(sortedTemps);	// sort by date
 		for (Temper temper: sortedTemps) {
 			if (temper.getTemper() >= lowTemp && temper.getTemper() <= hiTemp) {	// temper. is in range
