@@ -37,7 +37,8 @@ public class TemperaturesController {
 	@PostMapping(consumes="application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<Temper> addTemper(@RequestBody Temper temper) {
-		return ResponseEntity.status(HttpStatus.CREATED).body(repository.save(temper));
+		temper = repository.save(temper);
+		return ResponseEntity.status(HttpStatus.CREATED).body(temper);
 	}
 	
 	@GetMapping("/{id}")
