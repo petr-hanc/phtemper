@@ -24,7 +24,7 @@ public class PhtemperApplication implements CommandLineRunner {
 	
 	@Override
 	public void run(String... args) throws Exception {
-		
+		/*
 		List<Temper> tempers = new ArrayList<Temper>();
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-01T11:30:00"), 25.4F));
 		tempers.add(new Temper(LocalDateTime.parse("2021-07-31T04:13:00"), 9.8F));
@@ -34,6 +34,7 @@ public class PhtemperApplication implements CommandLineRunner {
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-15T11:40:00"), 17F));
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-20T11:40:00"), 35F));
 		repository.saveAll(tempers);
+		*/
 	}
 
 }
