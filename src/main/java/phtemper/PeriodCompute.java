@@ -13,17 +13,22 @@ import org.springframework.stereotype.Component;
 public class PeriodCompute {
 	
 	@Autowired
-    TemperRepository repository;
+    private TemperRepository repository;
+	
+	/* auxiliary variables for computation */
+	private PeriodD periodMax;		// longest period in temperature range
+	private long periodMaxLength;		// length in days
+	private Temper oldestInRange, newestInRange;
+	private boolean withinPeriod;	// true if period was found and hasn't finished yet
 
 	/** Returns longest period (starting date and ending date) with all temperatures between lowTemp and hiTemp (included).
 	 * If no such temperature is found then returns null  */
 	public PeriodD longestPeriod(Float lowTemp, Float hiTemp) {
-		PeriodD periodMax = null;		// longest period in temperature range
-		Long periodMaxLength = -1L;		// length in days
-		Temper oldestInRange = null;
-		Temper newestInRange = null;
-		Boolean withinPeriod = false;	// true if period was found and hasn't finished yet
-		
+		periodMax = null;
+		periodMaxLength = -1L;
+		oldestInRange = null;
+		newestInRange = null;
+		withinPeriod = false;
 		if (lowTemp == null || hiTemp == null || lowTemp > hiTemp)
 			return null;
 		ArrayList<Temper> sortedTemps = new ArrayList<Temper>(repository.findAll());
@@ -39,15 +44,16 @@ public class PeriodCompute {
 					newestInRange = temper;
 			} else {	// temper. out of range
 				if (withinPeriod == true) 
-					finishPeriod(oldestInRange, newestInRange, periodMaxLength, periodMax, withinPeriod);
+					finishPeriod();
 			}
 		}
 		if (withinPeriod == true) 
-			finishPeriod(oldestInRange, newestInRange, periodMaxLength, periodMax, withinPeriod);
+			finishPeriod();
 		return periodMax;
 	}
 	
-	private void finishPeriod(Temper oldestInRange, Temper newestInRange, Long periodMaxLength, PeriodD periodMax, Boolean withinPeriod) {
+	/** Finish a period of passing temperatures that was found. Changes member variables. */
+	private void finishPeriod() {
 		PeriodD period = new PeriodD();
 		ChronoPeriod periodChrono;	// interval between dates
 		long periodLength = 0;		// length in days
