@@ -52,8 +52,8 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
-			<!--  <scope>runtime</scope> -->
-			<!--  <version>1.4.193</version>  -->
+			<!-- For running TCP server this has to be removed:
+			    <scope>runtime</scope> -->
 		</dependency>
 		<dependency>
 			<!-- For using JUnit4 with SpringBoot 2.4 and later -->
@@ -67,9 +67,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-		<!-- <dependency> <groupId>com.fasterxml.jackson.core</groupId> 
-		<artifactId>jackson-databind</artifactId> 
-			</dependency> -->
 	</dependencies>
 
 	<build>
