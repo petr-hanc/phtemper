@@ -52,6 +52,15 @@ public class PhtemperApplication extends SpringBootServletInitializer /* impleme
 		
 	}
 	
+	
+	@Bean(initMethod = "start", destroyMethod = "stop")
+    public Server h2Server() throws SQLException {
+		Server srv = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
+		return srv;
+        //return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
+    }
+	
+	/*
 	@Bean(destroyMethod = "close")
 	public DataSource dataSource(Optional<Server> h2Server) throws PropertyVetoException {
 	    HikariDataSource ds = new HikariDataSource();
@@ -61,12 +70,7 @@ public class PhtemperApplication extends SpringBootServletInitializer /* impleme
 	    ds.setPassword(env.getProperty("db.pass"));
 	    return ds;
 	}
+	*/
 	
-	@Bean(initMethod = "start", destroyMethod = "stop")
-    public Server h2Server() throws SQLException {
-		Server srv = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
-		return srv;
-        //return Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
-    }
 
 }
