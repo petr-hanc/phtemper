@@ -4,24 +4,30 @@ import java.sql.SQLException;
 
 import org.h2.tools.Server;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
-public class PhtemperApplication extends SpringBootServletInitializer /* implements CommandLineRunner */ {
+public class PhtemperApplication extends SpringBootServletInitializer implements CommandLineRunner {
 	
     @Autowired
     TemperRepository repository;
     @Autowired
     PeriodCompute periodCompute;
+    @Value("${phtemper.startH2TcpServer}")
+    private String startH2TcpServer;
+    
+    
     
 	public static void main(String[] args) {
 		SpringApplication.run(PhtemperApplication.class, args);
 	}
 	
-	//@Override
+	@Override
 	public void run(String... args) throws Exception {
 		
 		/*
@@ -38,10 +44,12 @@ public class PhtemperApplication extends SpringBootServletInitializer /* impleme
 		*/
 		
 	}
-	
-	@Bean(initMethod = "start", destroyMethod = "stop")
+		
+	@Bean(destroyMethod = "stop")
     public Server h2Server() throws SQLException {
-		Server srv = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092");
+		Server srv = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092", "-tcpDaemon");
+		if (startH2TcpServer.equalsIgnoreCase("true")) 
+			srv.start();
 		return srv;
     }
 	
