@@ -30,19 +30,8 @@ import phtemper.TemperRepository;
 @CrossOrigin(origins="*")
 public class PeriodsController {
 	
-	/*
-	@Autowired
-	private TemperRepository repository;
-	*/
 	@Autowired
     PeriodCompute periodCompute;
-	
-	/*
-	@GetMapping(produces="application/json")
-	public List<Temper> allTempers() {
-		return repository.findAll();
-	}
-	*/
 	
 	@GetMapping("/period")
 	public ResponseEntity<PeriodD> getLongestPeriod(@RequestParam Float lowTemp, @RequestParam Float hiTemp) {
