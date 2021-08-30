@@ -51,12 +51,18 @@ public class PeriodComputeIntegrTest {
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-03T05:15:00"), 5.0F));
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-04T08:00:00"), 15.0F));
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-13T12:00:00"), 25.0F));
-		tempers.add(new Temper(LocalDateTime.parse("2021-08-13T12:00:01"), 25.01F));
+		tempers.add(new Temper(LocalDateTime.parse("2021-08-14T12:00:01"), 25.01F));
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-15T13:20:00"), 17F));
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-25T12:00:00"), 17F));
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-27T11:30:00"), 35F));
 		repository.deleteAll();
 		repository.saveAll(tempers);
+    }
+    
+    /** adds a temperature to test data to make 2 longest periods */
+    public void prepareTestContext_make2PeriodsSameLength() {
+    	Temper temper = new Temper(LocalDateTime.parse("2021-08-14T11:00:00"), 20F);
+    	repository.save(temper);
     }
     
     @Test
@@ -65,7 +71,7 @@ public class PeriodComputeIntegrTest {
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/periods/period?lowTemp=15&hiTemp=25"), HttpMethod.GET, entity, String.class);
         String expected = "{\"fromDate\":\"2021-08-15\",\"toDate\":\"2021-08-25\"}";
-        System.out.println(response);	//DEBUG
+        System.out.println(response);	// DEBUG
         JSONAssert.assertEquals(expected, response.getBody(), false);
     }  
     
@@ -75,28 +81,34 @@ public class PeriodComputeIntegrTest {
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/periods/periodTime?lowTemp=15&hiTemp=25&fromTime=8:00&toTime=12:00"), HttpMethod.GET, entity, String.class);
         String expected = "{\"fromDate\":\"2021-08-04\",\"toDate\":\"2021-08-25\"}";
-        System.out.println(response);	//DEBUG
+        System.out.println(response);	// DEBUG
         JSONAssert.assertEquals(expected, response.getBody(), false);
     }
 
     @Ignore("Temporary - making test development faster")
 	@Test
 	public void testLongestPeriodDb() {
-		System.out.println("testLongestPeriod");
-		System.out.println(repository.findAll());
+		System.out.println("testLongestPeriod"); // debug
+		System.out.println(repository.findAll());// debug
 		PeriodD period = periodCompute.longestPeriod(15F, 25F);
-		System.out.println(period);
 		assertThat(period, equalTo(new PeriodD(LocalDate.parse("2021-08-15"), LocalDate.parse("2021-08-25"))));
 	}
 
     @Ignore("Temporary - making test development faster")
 	@Test
 	public void testLongestPeriodWithTimeDb() {
-		System.out.println("testLongestPeriodWithTime()");
-		//System.out.println(repository.findAll());
+		System.out.println("testLongestPeriodWithTime()");// debug
+		//System.out.println(repository.findAll());// debug
 		PeriodD period = periodCompute.longestPeriodWithTime(15F, 25F, LocalTime.parse("08:00"), LocalTime.parse("12:00"));		
-		System.out.println(period);
 		assertThat(period, equalTo(new PeriodD(LocalDate.parse("2021-08-04"), LocalDate.parse("2021-08-25"))));
+	}
+    
+	@Test
+	public void testLongestPeriodDb_2LongestPeriods_olderOne() {
+		prepareTestContext_make2PeriodsSameLength();
+		PeriodD period = periodCompute.longestPeriod(15F, 25F);
+		//System.out.println(period);
+		assertThat(period, equalTo(new PeriodD(LocalDate.parse("2021-08-04"), LocalDate.parse("2021-08-14"))));
 	}
 	
     private String createURLWithPort(String uri) {
