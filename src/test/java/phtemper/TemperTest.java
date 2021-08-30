@@ -2,16 +2,16 @@ package phtemper;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.lessThan;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 //import static org.hamcrest.Matchers.lessThan;
 
 import java.time.LocalDateTime;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-//@RunWith(SpringJUnit4ClassRunner.class)
 public class TemperTest {
 
 	@Test
@@ -20,6 +20,8 @@ public class TemperTest {
 		Temper temper2 = new Temper(LocalDateTime.parse("2021-09-01T07:00:00"), -20.5F);
 		System.out.println(temper1.compareTo(temper2));
 		assertThat(temper1.compareTo(temper2), lessThan(0));
+		//assertTrue(5 > 1);
+		
 	}
 
 }
