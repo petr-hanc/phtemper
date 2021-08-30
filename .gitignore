@@ -5,6 +5,7 @@ target/
 !**/src/test/**/target/
 
 db_other/
+auxiliar/
 
 ### STS ###
 .apt_generated
