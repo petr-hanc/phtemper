@@ -108,7 +108,7 @@ Operations with temperatures.
 
 ## Period [/periods/period?lowTemp={lowTemp}&hiTemp={hiTemp}]
 
-Longest period (starting date and ending date) with all temperatures between lowTemp and hiTemp (included).
+Longest period (starting date and ending date) with all temperatures between lowTemp and hiTemp (included). If there are more longest periods, return the oldest one.
 
 + Parameters
 
@@ -129,7 +129,7 @@ Longest period (starting date and ending date) with all temperatures between low
 ## Period Considering Time [/periods/periodTime?lowTemp={lowTemp}&hiTemp={hiTemp}&fromTime={fromTime}&toTime={toTime}]
 
 Longest period (starting date and ending date) with all temperatures between lowTemp and hiTemp (included).
-Only temperatures with time between fromTime and toTime (included) are considered, all others are ignored.
+Only temperatures with time between fromTime and toTime (included) are considered, all others are ignored. If there are more longest periods, return the oldest one.
 
 + Parameters
 
