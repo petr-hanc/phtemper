@@ -34,6 +34,7 @@ public class Temper implements Comparable<Temper> {
 		this.temper = temper;
 	}
     
+    /** Compares by timeStamp */
 	public int compareTo (Temper temp) {
 		return this.timeStamp.compareTo(temp.timeStamp); 		
 	}
