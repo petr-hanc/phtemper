@@ -25,7 +25,7 @@ public class PeriodCompute {
 
 	/** Returns longest period (starting date and ending date) in temperatures stored in repository 
 	 * with all temperatures between lowTemp and hiTemp (included).
-	 * If no such temperature is found then returns null  */
+	 * If no such temperature is found then it returns null. */
 	public PeriodD longestPeriod(Float lowTemp, Float hiTemp) {
 		ArrayList<Temper> temperatures = new ArrayList<Temper>(repository.findAll());
 		return longestPeriodInList(lowTemp, hiTemp, temperatures);
@@ -34,7 +34,7 @@ public class PeriodCompute {
 	/** Returns longest period (starting date and ending date) in temperatures stored in repository 
 	 * with all temperatures between lowTemp and hiTemp (included). Only temperatures with time between fromTime and 
 	 * toTime (included) are considered, all others are ignored.
-	 * If no such temperature is found then returns null  */
+	 * If no such temperature is found then it returns null. */
 	public PeriodD longestPeriodWithTime(Float lowTemp, Float hiTemp, LocalTime fromTime, LocalTime toTime) {
 		ArrayList<Temper> temperatures = new ArrayList<Temper>(repository.findAll());
 		ArrayList<Temper> tempersInTime = new ArrayList<Temper>();
@@ -54,7 +54,8 @@ public class PeriodCompute {
 	}
 	
 	/** Returns longest period (starting date and ending date) in temperatures list with all temperatures between lowTemp and hiTemp (included).
-	 * If no such temperature is found then returns null  */
+	 * If no such temperature is found then it returns null.
+	 * If there are more longest periods it returns the oldest one. */
 	private PeriodD longestPeriodInList(Float lowTemp, Float hiTemp, List<Temper> temperatures) {
 		periodMax = null;
 		periodMaxLength = -1L;
