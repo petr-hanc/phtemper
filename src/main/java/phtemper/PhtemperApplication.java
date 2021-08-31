@@ -32,7 +32,10 @@ public class PhtemperApplication extends SpringBootServletInitializer implements
 	
 	@Override
 	public void run(String... args) throws Exception {
-		/*
+		// resetRepositoryDefaultData();
+	}
+	
+	public void resetRepositoryDefaultData() {
 		repository.deleteAll();
 		List<Temper> tempers = new ArrayList<Temper>();
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-01T11:30:00"), 25.4F));
@@ -46,11 +49,10 @@ public class PhtemperApplication extends SpringBootServletInitializer implements
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-25T12:00:00"), 17F));
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-27T11:30:00"), 35F));
 		repository.saveAll(tempers);
-		*/
 	}
 		
 	@Bean(destroyMethod = "stop")
-    public Server h2Server() throws SQLException {
+    public Server h2TcpServer() throws SQLException {
 		Server srv = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092", "-tcpDaemon");
 		if (startH2TcpServer.equalsIgnoreCase("true")) 
 			srv.start();
