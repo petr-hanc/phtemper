@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.easymock.EasyMock;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -19,9 +18,9 @@ import org.junit.Test;
 public class PeriodComputeTest {
 	
     private static PeriodCompute periodCompute;
-    private TemperRepository repositMock;
-    PeriodD period;
-	List<Temper> tempers;
+    private static TemperRepository repositMock;
+    private static PeriodD period;
+    private static List<Temper> tempers;
     
 
 	@BeforeClass
@@ -35,12 +34,9 @@ public class PeriodComputeTest {
 		repositMock = EasyMock.createStrictMock("mockRepo", TemperRepository.class);
 		EasyMock.expect(repositMock.findAll()).andReturn(tempers);
 		EasyMock.replay(repositMock);
+		
 	}
 
-	@After
-	public void tearDown() throws Exception {
-	}
-	
 	@Test
 	public void testLongestPeriodInList() {
 		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
