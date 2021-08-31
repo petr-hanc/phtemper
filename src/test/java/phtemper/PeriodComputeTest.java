@@ -3,10 +3,10 @@ package phtemper;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.fail;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +14,6 @@ import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class PeriodComputeTest {
@@ -33,6 +32,9 @@ public class PeriodComputeTest {
 	@Before
 	public void setUp() throws Exception {
 		tempers = new ArrayList<Temper>();
+		repositMock = EasyMock.createStrictMock("mockRepo", TemperRepository.class);
+		EasyMock.expect(repositMock.findAll()).andReturn(tempers);
+		EasyMock.replay(repositMock);
 	}
 
 	@After
@@ -120,12 +122,26 @@ public class PeriodComputeTest {
 		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T15:00:00"), 30f));
 		tempers.add(new Temper(LocalDateTime.parse("2106-01-03T10:00:00"), 10f));
 		tempers.add(new Temper(LocalDateTime.parse("2106-01-05T10:00:00"), -10.01f));
-		repositMock = EasyMock.createStrictMock("mockRepo", TemperRepository.class);
-		EasyMock.expect(repositMock.findAll()).andReturn(tempers);
-		EasyMock.replay(repositMock);
 		periodCompute = new PeriodCompute(repositMock);
 		
+		period = periodCompute.longestPeriodWithTime(-10f, 10f, LocalTime.parse("10:00:00"), LocalTime.parse("14:00:00"));
+		assertThat(period, equalTo(new PeriodD(LocalDate.parse("2105-12-31"), LocalDate.parse("2106-01-03"))));
+		EasyMock.verify(repositMock);
+	}
+	
+	@Test
+	public void testLongestPeriodWithTime_longerTime() {
+		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
+		tempers.add(new Temper(LocalDateTime.parse("2105-12-31T11:30:00"), -9f));
+		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T00:00:01"), 5f));
+		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T15:00:00"), 30f));
+		tempers.add(new Temper(LocalDateTime.parse("2106-01-03T10:00:00"), 10f));
+		tempers.add(new Temper(LocalDateTime.parse("2106-01-05T10:00:00"), -10.01f));
+		periodCompute = new PeriodCompute(repositMock);
 		
+		period = periodCompute.longestPeriodWithTime(-10f, 10f, LocalTime.parse("10:00:00"), LocalTime.parse("15:00:00"));
+		assertThat(period, equalTo(new PeriodD(LocalDate.parse("2105-12-31"), LocalDate.parse("2105-12-31"))));
+		EasyMock.verify(repositMock);
 	}
 
 }
