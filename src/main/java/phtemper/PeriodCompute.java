@@ -8,14 +8,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import lombok.RequiredArgsConstructor;
+
 @Component
+@RequiredArgsConstructor
 public class PeriodCompute {
 	
-	@Autowired
-    private TemperRepository repository;
+    private final TemperRepository repository;
 	
 	/* auxiliary variables for computation */
 	private PeriodD periodMax;		// longest period in temperature range
@@ -56,13 +57,13 @@ public class PeriodCompute {
 	/** Returns longest period (starting date and ending date) in temperatures list with all temperatures between lowTemp and hiTemp (included).
 	 * If no such temperature is found then it returns null.
 	 * If there are more longest periods it returns the oldest one. */
-	private PeriodD longestPeriodInList(Float lowTemp, Float hiTemp, List<Temper> temperatures) {
+	PeriodD longestPeriodInList(Float lowTemp, Float hiTemp, List<Temper> temperatures) {
 		periodMax = null;
 		periodMaxLength = -1L;
 		oldestInRange = null;
 		newestInRange = null;
 		withinPeriod = false;
-		if (lowTemp == null || hiTemp == null || lowTemp > hiTemp)
+		if (lowTemp == null || hiTemp == null || temperatures == null || lowTemp > hiTemp)
 			return null;
 		ArrayList<Temper> sortedTemps = new ArrayList<Temper>(temperatures);
 		Collections.sort(sortedTemps);	// sort by date
