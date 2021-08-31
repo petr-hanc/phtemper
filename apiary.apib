@@ -17,7 +17,7 @@ Operations with a temperature.
 
 + Attributes (object)
     + id: 1 (number)
-    + dateTime: `2021-08-01T11:30` (string) - time stamp in format according to norm ISO8601
+    + timeStamp: `2021-08-01T11:30` (string) - time stamp in format according to norm ISO8601
     + temper: 25.4 (number) - temperature
 
 ### Retrieve a Temperature [GET]
@@ -41,7 +41,7 @@ Operations with a temperature.
 
 + Request Update temperature (application/json)
     + Attributes (object)
-        + datetime: `2021-08-01T12:40` (string) - time stamp in format according to norm ISO8601
+        + timeStamp: `2021-08-01T12:40` (string) - time stamp in format according to norm ISO8601
         + temper: 10.9 (number) - temperature
 
 + Response 200
@@ -55,7 +55,7 @@ Operations with a temperature.
 
 + Request Update temperature (application/json)
     + Attributes (object)
-        + datetime: `2021-08-01T11:30` (string) - time stamp in format according to norm ISO8601
+        + timeStamp: `2021-08-01T11:30` (string) - time stamp in format according to norm ISO8601
         + temper: 25.4 (number) - temperature
 
 + Response 400
@@ -84,12 +84,12 @@ Operations with temperatures.
         [
           {
             "id": 1,
-            "datetime": "2021-08-01T11:30",
+            "timeStamp": "2021-08-01T11:30",
             "temper": 25.4
           },
           {
             "id": 2,
-            "datetime": "2021-07-28T20:02",
+            "timeStamp": "2021-07-28T20:02",
             "temper": 13
           }
         ]
@@ -98,7 +98,7 @@ Operations with temperatures.
 
 + Request Add temperature (application/json)
     + Attributes (object)
-        + datetime: `2021-08-01T11:30` (string, required) - time stamp in format according to norm ISO8601
+        + timeStamp: `2021-08-01T11:30` (string, required) - time stamp in format according to norm ISO8601
         + temper: 25.4 (number, required) - temperature
 
 + Response 201
