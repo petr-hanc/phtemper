@@ -45,7 +45,6 @@ public class PeriodCompute {
 				if (time.compareTo(fromTime) >= 0 && time.compareTo(toTime) <= 0) 
 					tempersInTime.add(temper);
 			}
-			//System.out.println("tempersInTime: " + tempersInTime);	// DEBUG
 			return longestPeriodInList(lowTemp, hiTemp, tempersInTime);
 		}
 		catch (NullPointerException e) {
