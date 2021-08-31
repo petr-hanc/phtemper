@@ -10,6 +10,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -43,7 +44,7 @@ public class PeriodComputeIntegrTest {
     HttpHeaders headers = new HttpHeaders();
     
     @Before
-    public void prepareTestContext() {
+    public void setUp() {
 		List<Temper> tempers = new ArrayList<Temper>();
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-01T11:30:00"), 25.4F));
 		tempers.add(new Temper(LocalDateTime.parse("2021-07-31T04:13:00"), 9.8F));
@@ -55,9 +56,13 @@ public class PeriodComputeIntegrTest {
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-15T13:20:00"), 17F));
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-25T12:00:00"), 17F));
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-27T11:30:00"), 35F));
-		repository.deleteAll();
 		repository.saveAll(tempers);
     }
+    
+	@After
+	public void tearDown() throws Exception {
+		repository.deleteAll();
+	}
     
     /** adds a temperature to test data to make 2 longest periods */
     public void prepareTestContext_make2PeriodsSameLength() {
