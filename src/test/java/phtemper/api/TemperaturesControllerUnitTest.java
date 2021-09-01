@@ -135,7 +135,7 @@ public class TemperaturesControllerUnitTest {
 	public void testGetTemper_nonExistentId_badRequest() throws Exception {
 		expect(repositMock.findById(60000L)).andReturn(Optional.ofNullable(null));
 		replay(repositMock);
-		this.mockMvc.perform(get("/temperatures/60000")).andExpect(status().isBadRequest()).andReturn();
+		mockMvc.perform(get("/temperatures/60000")).andExpect(status().isBadRequest());
 		verify(repositMock);
 		
 		/*
@@ -169,6 +169,21 @@ public class TemperaturesControllerUnitTest {
 	        .andExpect(content().string(
 					"{\"id\":1,\"timeStamp\":\"2106-02-28T22:30:00\",\"temper\":10.02}"
 					));
+		verify(repositMock);
+	}
+	
+	@Test
+	public void testUpdateTemper_nonExistentId_badRequest() throws Exception {
+		expect(repositMock.findById(60000L)).andReturn(Optional.ofNullable(null));
+		replay(repositMock);
+		Temper temperNew = new Temper(LocalDateTime.parse("2106-02-28T22:30:00"), 10.02f);
+		mockMvc.perform(
+				patch("/temperatures/60000")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(temperNew))
+				.accept(MediaType.APPLICATION_JSON)
+			)
+			.andExpect(status().isBadRequest());
 		verify(repositMock);
 	}
 
