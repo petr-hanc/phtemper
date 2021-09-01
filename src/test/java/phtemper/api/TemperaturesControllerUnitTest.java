@@ -2,14 +2,11 @@ package phtemper.api;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -38,6 +35,14 @@ public class TemperaturesControllerUnitTest {
     private static final String CONTENT_TYPE = "application/json";
     private static TemperRepository repositMock;
     private static List<Temper> tempers;
+    private static ObjectMapper objectMapper;
+    
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+    	objectMapper = new ObjectMapper();
+    	objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+    	objectMapper.registerModule(new JavaTimeModule());
+    }
 
 	@Before
 	public void setUp() throws Exception {
@@ -142,6 +147,29 @@ public class TemperaturesControllerUnitTest {
 
 	@Test
 	public void testUpdateTemper() throws Exception {
+		Temper temper = new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f);
+		temper.setId(1L);
+		Temper temperNew = new Temper(LocalDateTime.parse("2106-02-28T22:30:00"), 10.02f);
+		Temper temperNewDb = objectMapper.readValue(asJsonString(temperNew), Temper.class);		// deep copy
+		temperNewDb.setId(1L);
+		expect(repositMock.findById(1L))
+			.andReturn(Optional.ofNullable(temper));
+		expect(repositMock.save(eq(temperNewDb)))
+			.andReturn(temperNewDb);
+		replay(repositMock);
+		
+		mockMvc.perform(
+				patch("/temperatures/1")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(temperNew))
+				.accept(MediaType.APPLICATION_JSON)
+			)
+			.andExpect(status().isOk())
+	        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+	        .andExpect(content().string(
+					"{\"id\":1,\"timeStamp\":\"2106-02-28T22:30:00\",\"temper\":10.02}"
+					));
+		verify(repositMock);
 	}
 
 	@Test
@@ -150,11 +178,7 @@ public class TemperaturesControllerUnitTest {
 	
 	public static String asJsonString(final Object obj) {
 	    try {
-	        //return new ObjectMapper().writeValueAsString(obj); // debug
-	        ObjectMapper mapper = new ObjectMapper();
-	        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-	        mapper.registerModule(new JavaTimeModule());
-	        return mapper.writeValueAsString(obj);
+	        return objectMapper.writeValueAsString(obj);
 	    } catch (Exception e) {
 	        throw new RuntimeException(e);
 	    }
