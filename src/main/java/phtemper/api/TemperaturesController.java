@@ -49,7 +49,7 @@ public class TemperaturesController {
 			return ResponseEntity.ok(temper);
 		} 
 		catch (IllegalArgumentException e) {
-			System.err.println(e.getMessage());
+			System.err.println(e.getMessage()); // debug
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
@@ -66,7 +66,7 @@ public class TemperaturesController {
 			return ResponseEntity.ok(repository.save(temper));
 		}
 		catch (IllegalArgumentException e) {
-			System.err.println(e.getMessage());
+			System.err.println(e.getMessage()); // debug
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
@@ -78,7 +78,7 @@ public class TemperaturesController {
 			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 		} 
 		catch (EmptyResultDataAccessException e) {
-			System.err.println(e.getMessage());
+			System.err.println(e.getMessage()); // debug
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}

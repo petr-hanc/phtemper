@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import phtemper.Temper;
@@ -34,35 +35,51 @@ public class TemperaturesControllerUnitTest {
 		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
 		repositMock = EasyMock.createStrictMock("mockRepo", TemperRepository.class);
 		//EasyMock.expect(repositMock.findAll()).andReturn(tempers);
-		EasyMock.expect(repositMock.findById(1L)).andReturn(Optional.ofNullable(tempers.get(0)));
-		EasyMock.replay(repositMock);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(new TemperaturesController(repositMock)).build();
 	}
 
 	@After
 	public void tearDown() throws Exception {
+		
 	}
 
 	@Test
-	public void testAllTempers() {
+	public void testAllTempers() throws Exception {
 	}
 
 	@Test
-	public void testAddTemper() {
+	public void testAddTemper() throws Exception {
 	}
 
 	@Test
 	public void testGetTemper() throws Exception {
+		EasyMock.expect(repositMock.findById(1L)).andReturn(Optional.ofNullable(tempers.get(0)));
+		EasyMock.replay(repositMock);
 		this.mockMvc.perform(get("/temperatures/1")).andExpect(status().isOk()).andExpect(content().contentType(CONTENT_TYPE))
 			.andExpect(jsonPath("$.timeStamp").value("2105-12-15T11:30:00"));
+		EasyMock.verify(repositMock);
+	}
+	
+	@Test
+	public void testGetTemper_nonExistentId_badRequest() throws Exception {
+		EasyMock.expect(repositMock.findById(60000L)).andReturn(Optional.ofNullable(null));
+		EasyMock.replay(repositMock);
+		this.mockMvc.perform(get("/temperatures/60000")).andExpect(status().isBadRequest()).andReturn();
+		EasyMock.verify(repositMock);
+		
+		/*
+		//MvcResult result = this.mockMvc.perform(get("/temperatures/60000")).andExpect(status().isBadRequest()).andReturn();
+		String resultStr = result.getResponse().getContentAsString();
+		System.err.println(resultStr);
+		*/
 	}
 
 	@Test
-	public void testUpdateTemper() {
+	public void testUpdateTemper() throws Exception {
 	}
 
 	@Test
-	public void testDelTemper() {
+	public void testDelTemper() throws Exception {
 	}
 
 }
