@@ -9,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import lombok.Data;
 
 @Data
@@ -20,6 +22,7 @@ public class Temper implements Comparable<Temper> {
     @Column(name = "id")
 	private Long id;
     @Column(name = "time_stamp")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime timeStamp;
     @Column(name = "temper")
     private Float temper;
