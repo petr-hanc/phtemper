@@ -3,15 +3,24 @@ package phtemper.api;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import phtemper.Temper;
 import phtemper.TemperRepository;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.easymock.EasyMock.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.time.LocalDateTime;
@@ -19,9 +28,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import org.easymock.EasyMock;
-
-
+/*
+@RunWith(SpringRunner.class)
+@WebMvcTest(TemperaturesController.class)
+*/
 public class TemperaturesControllerUnitTest {
 	
 	private MockMvc mockMvc;
@@ -32,7 +42,7 @@ public class TemperaturesControllerUnitTest {
 	@Before
 	public void setUp() throws Exception {
 		tempers = new ArrayList<Temper>();
-		repositMock = EasyMock.createStrictMock("mockRepo", TemperRepository.class);
+		repositMock = createStrictMock("mockRepo", TemperRepository.class);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(new TemperaturesController(repositMock)).build();
 	}
 
@@ -50,8 +60,8 @@ public class TemperaturesControllerUnitTest {
 		for (Temper temper : tempers) {
 			temper.setId(id++);
 		}
-		EasyMock.expect(repositMock.findAll()).andReturn(tempers);
-		EasyMock.replay(repositMock);
+		expect(repositMock.findAll()).andReturn(tempers);
+		replay(repositMock);
 		
 		this.mockMvc.perform(get("/temperatures")).andExpect(status().isOk()).andExpect(content().contentType(CONTENT_TYPE))
 		.andExpect(content().string(
@@ -65,32 +75,54 @@ public class TemperaturesControllerUnitTest {
 		System.err.println(resultStr);
 		*/
 		
-		EasyMock.verify(repositMock);
+		verify(repositMock);
 		
 	}
 
 	@Test
 	public void testAddTemper() throws Exception {
+		Temper temper = new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f);
+		expect(repositMock.save(eq(temper)))
+			.andReturn(temper);
+		replay(repositMock);
+		
+		String resultStr = mockMvc.perform(
+				post("/temperatures")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(temper))
+				.accept(MediaType.APPLICATION_JSON)
+			)
+			.andExpect(status().isCreated())
+	        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+	        .andReturn().getResponse().getContentAsString()
+			;
+		System.err.println(resultStr);
+		verify(repositMock);
+	        
+		/*
+		this.mockMvc.perform(post("/greetWithPostAndFormData").param("id", "1").param("name", "John Doe")).andDo(print()).andExpect(status().isOk()).andExpect(content().contentType(CONTENT_TYPE))
+        .andExpect(jsonPath("$.message").value("Hello World John Doe!!!")).andExpect(jsonPath("$.id").value(1));
+        */
 	}
 
 	@Test
 	public void testGetTemper() throws Exception {
 		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
-		EasyMock.expect(repositMock.findById(1L)).andReturn(Optional.ofNullable(tempers.get(0)));
-		EasyMock.replay(repositMock);
+		expect(repositMock.findById(1L)).andReturn(Optional.ofNullable(tempers.get(0)));
+		replay(repositMock);
 		
 		this.mockMvc.perform(get("/temperatures/1")).andExpect(status().isOk()).andExpect(content().contentType(CONTENT_TYPE))
 			.andExpect(jsonPath("$.timeStamp").value("2105-12-15T11:30:00"))
 			.andExpect(jsonPath("$.temper").value("-15.0"));
-		EasyMock.verify(repositMock);
+		verify(repositMock);
 	}
 	
 	@Test
 	public void testGetTemper_nonExistentId_badRequest() throws Exception {
-		EasyMock.expect(repositMock.findById(60000L)).andReturn(Optional.ofNullable(null));
-		EasyMock.replay(repositMock);
+		expect(repositMock.findById(60000L)).andReturn(Optional.ofNullable(null));
+		replay(repositMock);
 		this.mockMvc.perform(get("/temperatures/60000")).andExpect(status().isBadRequest()).andReturn();
-		EasyMock.verify(repositMock);
+		verify(repositMock);
 		
 		/*
 		//MvcResult result = this.mockMvc.perform(get("/temperatures/60000")).andExpect(status().isBadRequest()).andReturn();
@@ -105,6 +137,18 @@ public class TemperaturesControllerUnitTest {
 
 	@Test
 	public void testDelTemper() throws Exception {
+	}
+	
+	public static String asJsonString(final Object obj) {
+	    try {
+	        //return new ObjectMapper().writeValueAsString(obj); // debug
+	        ObjectMapper mapper = new ObjectMapper();
+	        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+	        mapper.registerModule(new JavaTimeModule());
+	        return mapper.writeValueAsString(obj);
+	    } catch (Exception e) {
+	        throw new RuntimeException(e);
+	    }
 	}
 
 }
