@@ -4,6 +4,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -43,6 +44,14 @@ public class TemperaturesControllerUnitTest {
     	objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
     	objectMapper.registerModule(new JavaTimeModule());
     }
+    
+	public static String asJsonString(final Object obj) {
+	    try {
+	        return objectMapper.writeValueAsString(obj);
+	    } catch (Exception e) {
+	        throw new RuntimeException(e);
+	    }
+	}
 
 	@Before
 	public void setUp() throws Exception {
@@ -189,14 +198,22 @@ public class TemperaturesControllerUnitTest {
 
 	@Test
 	public void testDelTemper() throws Exception {
+		repositMock.deleteById(1L);
+		expectLastCall();
+		replay(repositMock);
+		
+		this.mockMvc.perform(delete("/temperatures/1")).andExpect(status().isNoContent());
+		verify(repositMock);
 	}
 	
-	public static String asJsonString(final Object obj) {
-	    try {
-	        return objectMapper.writeValueAsString(obj);
-	    } catch (Exception e) {
-	        throw new RuntimeException(e);
-	    }
+	@Test
+	public void testDelTemper_nonExistentId_badRequest() throws Exception {
+		repositMock.deleteById(60000L);
+		expectLastCall().andThrow(new EmptyResultDataAccessException(1));
+		replay(repositMock);
+		
+		this.mockMvc.perform(delete("/temperatures/60000")).andExpect(status().isBadRequest());
+		verify(repositMock);
 	}
-
+	
 }
