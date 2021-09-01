@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -49,7 +50,9 @@ public class PeriodsController {
 	
 	@GetMapping("/periodTime")
 	public ResponseEntity<PeriodD> getLongestPeriodWithTime(
-			@RequestParam Float lowTemp, @RequestParam Float hiTemp, @RequestParam LocalTime fromTime, @RequestParam LocalTime toTime
+			@RequestParam Float lowTemp, @RequestParam Float hiTemp,
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime fromTime,  // @DateTimeFormat is used for tests
+			@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime toTime
 			) {
 		PeriodD period = periodCompute.longestPeriodWithTime(lowTemp, hiTemp, fromTime, toTime);
 		if (period == null) 

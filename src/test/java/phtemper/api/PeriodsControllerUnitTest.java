@@ -74,6 +74,20 @@ public class PeriodsControllerUnitTest {
 
 	@Test
 	public void testGetLongestPeriodWithTime() throws Exception {
+		mockMvc.perform(get("/periods/periodTime?lowTemp=-10&hiTemp=10&fromTime=10:00&toTime=14:00"))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(CONTENT_TYPE))
+			.andExpect(content().string(
+				"{\"fromDate\":\"2105-12-31\",\"toDate\":\"2106-01-03\"}"
+				));
+		verify(repositMock);
+	}
+	
+	@Test
+	public void testGetLongestPeriodWithTime_outOfTimeRange_noContent() throws Exception {
+		mockMvc.perform(get("/periods/periodTime?lowTemp=-10&hiTemp=10&fromTime=14:00&toTime=10:00"))
+			.andExpect(status().isNoContent());
+		verify(repositMock);
 	}
 
 }
