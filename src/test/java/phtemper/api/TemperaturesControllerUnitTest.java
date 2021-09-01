@@ -32,9 +32,7 @@ public class TemperaturesControllerUnitTest {
 	@Before
 	public void setUp() throws Exception {
 		tempers = new ArrayList<Temper>();
-		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
 		repositMock = EasyMock.createStrictMock("mockRepo", TemperRepository.class);
-		//EasyMock.expect(repositMock.findAll()).andReturn(tempers);
 		this.mockMvc = MockMvcBuilders.standaloneSetup(new TemperaturesController(repositMock)).build();
 	}
 
@@ -45,6 +43,30 @@ public class TemperaturesControllerUnitTest {
 
 	@Test
 	public void testAllTempers() throws Exception {
+		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
+		tempers.add(new Temper(LocalDateTime.parse("2105-12-31T11:30:00"), -9f));
+		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T00:00:01"), 5.01f));
+		Long id = 1L;
+		for (Temper temper : tempers) {
+			temper.setId(id++);
+		}
+		EasyMock.expect(repositMock.findAll()).andReturn(tempers);
+		EasyMock.replay(repositMock);
+		
+		this.mockMvc.perform(get("/temperatures")).andExpect(status().isOk()).andExpect(content().contentType(CONTENT_TYPE))
+		.andExpect(content().string(
+				"[{\"id\":1,\"timeStamp\":\"2105-12-15T11:30:00\",\"temper\":-15.0},{\"id\":2,\"timeStamp\":\"2105-12-31T11:30:00\",\"temper\":-9.0},"
+				+ "{\"id\":3,\"timeStamp\":\"2106-01-01T00:00:01\",\"temper\":5.01}]"
+				));
+		
+		/*
+		MvcResult result = this.mockMvc.perform(get("/temperatures")).andExpect(status().isOk()).andReturn();
+		String resultStr = result.getResponse().getContentAsString();
+		System.err.println(resultStr);
+		*/
+		
+		EasyMock.verify(repositMock);
+		
 	}
 
 	@Test
@@ -53,10 +75,13 @@ public class TemperaturesControllerUnitTest {
 
 	@Test
 	public void testGetTemper() throws Exception {
+		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
 		EasyMock.expect(repositMock.findById(1L)).andReturn(Optional.ofNullable(tempers.get(0)));
 		EasyMock.replay(repositMock);
+		
 		this.mockMvc.perform(get("/temperatures/1")).andExpect(status().isOk()).andExpect(content().contentType(CONTENT_TYPE))
-			.andExpect(jsonPath("$.timeStamp").value("2105-12-15T11:30:00"));
+			.andExpect(jsonPath("$.timeStamp").value("2105-12-15T11:30:00"))
+			.andExpect(jsonPath("$.temper").value("-15.0"));
 		EasyMock.verify(repositMock);
 	}
 	
