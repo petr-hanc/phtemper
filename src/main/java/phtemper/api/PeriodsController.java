@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.RequiredArgsConstructor;
 import phtemper.PeriodCompute;
 import phtemper.PeriodD;
 import phtemper.Temper;
@@ -28,15 +29,22 @@ import phtemper.TemperRepository;
 @RequestMapping(path="/periods",
                 produces="application/json")
 @CrossOrigin(origins="*")
+@RequiredArgsConstructor
 public class PeriodsController {
 	
-	@Autowired
     PeriodCompute periodCompute;
+    
+    /** For testing purposes */
+    PeriodsController(TemperRepository repository) {
+    	periodCompute = new PeriodCompute(repository);
+    }
 	
 	@GetMapping("/period")
 	public ResponseEntity<PeriodD> getLongestPeriod(@RequestParam Float lowTemp, @RequestParam Float hiTemp) {
 		PeriodD period = periodCompute.longestPeriod(lowTemp, hiTemp);
-		return ResponseEntity.ok(period);
+		if (period == null) 
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		else return ResponseEntity.ok(period);
 	}
 	
 	@GetMapping("/periodTime")
@@ -44,7 +52,9 @@ public class PeriodsController {
 			@RequestParam Float lowTemp, @RequestParam Float hiTemp, @RequestParam LocalTime fromTime, @RequestParam LocalTime toTime
 			) {
 		PeriodD period = periodCompute.longestPeriodWithTime(lowTemp, hiTemp, fromTime, toTime);
-		return ResponseEntity.ok(period);
+		if (period == null) 
+			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+		else return ResponseEntity.ok(period);
 	}
 	
 

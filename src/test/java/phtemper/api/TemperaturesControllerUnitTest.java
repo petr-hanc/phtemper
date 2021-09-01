@@ -60,11 +60,6 @@ public class TemperaturesControllerUnitTest {
 		this.mockMvc = MockMvcBuilders.standaloneSetup(new TemperaturesController(repositMock)).build();
 	}
 
-	@After
-	public void tearDown() throws Exception {
-		
-	}
-
 	@Test
 	public void testAllTempers() throws Exception {
 		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
