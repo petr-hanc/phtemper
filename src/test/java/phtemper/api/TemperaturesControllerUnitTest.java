@@ -86,7 +86,21 @@ public class TemperaturesControllerUnitTest {
 			.andReturn(temper);
 		replay(repositMock);
 		
-		String resultStr = mockMvc.perform(
+		mockMvc.perform(
+				post("/temperatures")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(asJsonString(temper))
+				.accept(MediaType.APPLICATION_JSON)
+			)
+			.andExpect(status().isCreated())
+	        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+	        .andExpect(content().string(
+					"{\"id\":null,\"timeStamp\":\"2105-12-15T11:30:00\",\"temper\":-15.0}"
+					));
+		verify(repositMock);
+		
+		/*
+		  		String resultStr = mockMvc.perform(
 				post("/temperatures")
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(temper))
@@ -97,12 +111,7 @@ public class TemperaturesControllerUnitTest {
 	        .andReturn().getResponse().getContentAsString()
 			;
 		System.err.println(resultStr);
-		verify(repositMock);
-	        
-		/*
-		this.mockMvc.perform(post("/greetWithPostAndFormData").param("id", "1").param("name", "John Doe")).andDo(print()).andExpect(status().isOk()).andExpect(content().contentType(CONTENT_TYPE))
-        .andExpect(jsonPath("$.message").value("Hello World John Doe!!!")).andExpect(jsonPath("$.id").value(1));
-        */
+		 */
 	}
 
 	@Test
