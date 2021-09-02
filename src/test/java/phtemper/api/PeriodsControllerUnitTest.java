@@ -21,6 +21,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import phtemper.PeriodCompute;
 import phtemper.Temper;
 import phtemper.TemperRepository;
 
@@ -47,7 +48,9 @@ public class PeriodsControllerUnitTest {
 		repositMock = createStrictMock("mockRepo", TemperRepository.class);
 		expect(repositMock.findAll()).andReturn(tempers);
 		replay(repositMock);
-		mockMvc = MockMvcBuilders.standaloneSetup(new PeriodsController(repositMock)).build();
+		mockMvc = MockMvcBuilders.standaloneSetup(
+					new PeriodsController(new PeriodCompute(repositMock))
+				).build();
 	}
 
 	@After
