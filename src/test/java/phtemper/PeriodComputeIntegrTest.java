@@ -29,6 +29,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
 /** Integration test of PeriodCompute - longestPeriod() and longestPeriodWithTime() */
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
@@ -42,6 +43,10 @@ public class PeriodComputeIntegrTest {
     private int port;
     TestRestTemplate restTemplate = new TestRestTemplate();
     HttpHeaders headers = new HttpHeaders();
+    
+    private String createURLWithPort(String uri) {
+        return "http://localhost:" + port + uri;
+    }
     
     @Before
     public void setUp() {
@@ -76,7 +81,7 @@ public class PeriodComputeIntegrTest {
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/periods/period?lowTemp=15&hiTemp=25"), HttpMethod.GET, entity, String.class);
         String expected = "{\"fromDate\":\"2021-08-15\",\"toDate\":\"2021-08-25\"}";
-        System.out.println(response);	// DEBUG
+        System.err.println(response);	// DEBUG
         JSONAssert.assertEquals(expected, response.getBody(), false);
     }  
     
@@ -86,7 +91,7 @@ public class PeriodComputeIntegrTest {
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/periods/periodTime?lowTemp=15&hiTemp=25&fromTime=08:00&toTime=12:00"), HttpMethod.GET, entity, String.class);
         String expected = "{\"fromDate\":\"2021-08-04\",\"toDate\":\"2021-08-25\"}";
-        System.out.println(response);	// DEBUG
+        System.err.println(response);	// DEBUG
         JSONAssert.assertEquals(expected, response.getBody(), false);
     }
 
@@ -116,7 +121,4 @@ public class PeriodComputeIntegrTest {
 		assertThat(period, equalTo(new PeriodD(LocalDate.parse("2021-08-04"), LocalDate.parse("2021-08-14"))));
 	}
 	
-    private String createURLWithPort(String uri) {
-        return "http://localhost:" + port + uri;
-    }
 }
