@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,22 +51,20 @@ public class TemperaturesControllerIntegrationTest {
     
 	@Before
 	public void setUp() throws Exception {
+		repository.deleteAll();
 		tempers = new ArrayList<Temper>();
 		request = new HttpEntity<String>(null, headers);
 	}
-
-	@After
-	public void tearDown() throws Exception {
-		repository.deleteAll();
-	}
-
+	
 	@Test
+	@Sql(scripts="classpath:cleanup.sql",executionPhase=Sql.ExecutionPhase.BEFORE_TEST_METHOD)	// reset of id sequence in DB - reset leftovers after other test classes
 	@Sql(scripts="classpath:cleanup.sql",executionPhase=Sql.ExecutionPhase.AFTER_TEST_METHOD)	// reset of id sequence in DB
 	public void testAllTempers() throws Exception {
 		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
 		tempers.add(new Temper(LocalDateTime.parse("2105-12-31T11:30:00"), -9f));
 		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T00:00:01"), 5.01f));
 		repository.saveAll(tempers);
+		//System.err.println(repository.findAll());	// DEBUG
 		
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/temperatures"), HttpMethod.GET, request, String.class);
