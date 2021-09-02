@@ -3,16 +3,13 @@ package phtemper.api;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertNull;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
@@ -29,11 +26,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.client.ClientHttpRequestFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
-import phtemper.PeriodCompute;
-import phtemper.PeriodD;
 import phtemper.Temper;
 import phtemper.TemperRepository;
 
@@ -56,10 +50,6 @@ public class TemperaturesControllerIntegrationTest {
         return "http://localhost:" + port + uri;
     }
     
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		tempers = new ArrayList<Temper>();
@@ -145,6 +135,19 @@ public class TemperaturesControllerIntegrationTest {
 	@Test
 	@Sql(scripts="classpath:cleanup.sql",executionPhase=Sql.ExecutionPhase.AFTER_TEST_METHOD)
 	public void testDelTemper() throws Exception {
+		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
+		tempers.add(new Temper(LocalDateTime.parse("2105-12-31T11:30:00"), -9f));
+		repository.saveAll(tempers);
+		
+        ResponseEntity<String> response = restTemplate.exchange(
+          createURLWithPort("/temperatures/1"), HttpMethod.DELETE, request, String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.NO_CONTENT));
+        //System.err.println(response);	// DEBUG
+        //System.err.println(repository.findAll());	// debug
+        assertThat(repository.count(), equalTo(1L));
+        Temper restTemper = repository.findAll().get(0);
+        assertThat(restTemper.getTimeStamp(), equalTo(LocalDateTime.parse("2105-12-31T11:30:00")));
+        assertThat(restTemper.getTemper(), equalTo(-9f));
 	}
 
 }
