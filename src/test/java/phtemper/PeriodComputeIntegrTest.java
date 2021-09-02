@@ -84,13 +84,13 @@ public class PeriodComputeIntegrTest {
 	public void testLongestPeriodWithTimeApi() throws Exception {
         HttpEntity<String> entity = new HttpEntity<String>(null, headers);
         ResponseEntity<String> response = restTemplate.exchange(
-          createURLWithPort("/periods/periodTime?lowTemp=15&hiTemp=25&fromTime=8:00&toTime=12:00"), HttpMethod.GET, entity, String.class);
+          createURLWithPort("/periods/periodTime?lowTemp=15&hiTemp=25&fromTime=08:00&toTime=12:00"), HttpMethod.GET, entity, String.class);
         String expected = "{\"fromDate\":\"2021-08-04\",\"toDate\":\"2021-08-25\"}";
         System.out.println(response);	// DEBUG
         JSONAssert.assertEquals(expected, response.getBody(), false);
     }
 
-    @Ignore("Temporary - making test development faster")
+    //@Ignore("Temporary - making test development faster")
 	@Test
 	public void testLongestPeriodDb() {
 		System.out.println("testLongestPeriod"); // debug
@@ -99,7 +99,7 @@ public class PeriodComputeIntegrTest {
 		assertThat(period, equalTo(new PeriodD(LocalDate.parse("2021-08-15"), LocalDate.parse("2021-08-25"))));
 	}
 
-    @Ignore("Temporary - making test development faster")
+    //@Ignore("Temporary - making test development faster")
 	@Test
 	public void testLongestPeriodWithTimeDb() {
 		System.out.println("testLongestPeriodWithTime()");// debug
