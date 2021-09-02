@@ -89,5 +89,17 @@ public class PeriodsControllerUnitTest {
 			.andExpect(status().isNoContent());
 		verify(repositMock);
 	}
+	
+	@Test
+	public void testGetLongestPeriodWithTime_badLowTemp_badRequest() throws Exception {
+		mockMvc.perform(get("/periods/periodTime?lowTemp=blabla&hiTemp=10&fromTime=14:00&toTime=10:00"))
+			.andExpect(status().isBadRequest());
+	}
+	
+	@Test
+	public void testGetLongestPeriodWithTime_badFromTime_badRequest() throws Exception {
+		mockMvc.perform(get("/periods/periodTime?lowTemp=5&hiTemp=10&fromTime=blabla&toTime=10:00"))
+			.andExpect(status().isBadRequest());
+	}
 
 }
