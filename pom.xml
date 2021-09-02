@@ -70,6 +70,11 @@
 				<version>4.3</version>
 				<scope>test</scope>
 		</dependency>
+		<!--  Reason: TestRestTemplate with default client can't make PATCH request -->
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

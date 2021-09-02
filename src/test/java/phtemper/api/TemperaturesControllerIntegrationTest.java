@@ -1,14 +1,9 @@
 package phtemper.api;
 
-import static org.easymock.EasyMock.createStrictMock;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertNull;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
@@ -33,8 +27,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.client.ClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 import phtemper.PeriodCompute;
 import phtemper.PeriodD;
@@ -126,6 +122,24 @@ public class TemperaturesControllerIntegrationTest {
 	@Test
 	@Sql(scripts="classpath:cleanup.sql",executionPhase=Sql.ExecutionPhase.AFTER_TEST_METHOD)
 	public void testUpdateTemper() throws Exception {
+		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
+		tempers.add(new Temper(LocalDateTime.parse("2105-12-31T11:30:00"), -9f));
+		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T00:00:01"), 5.01f));
+		repository.saveAll(tempers);
+		
+		Temper newTemper = new Temper(null, 30f);
+		HttpEntity<Temper> request = new HttpEntity<>(newTemper, headers);
+		/* TestRestTemplate with default client can't make PATCH request */
+		RestTemplate restTemplatePatch = 
+				new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+        ResponseEntity<Temper> response = restTemplatePatch.exchange(
+          createURLWithPort("/temperatures/2"), HttpMethod.PATCH, request, Temper.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
+        Temper temperReceived = response.getBody();
+        newTemper.setId(2L);
+        newTemper.setTimeStamp(LocalDateTime.parse("2105-12-31T11:30:00"));
+        assertThat(temperReceived, equalTo(newTemper));
+        
 	}
 
 	@Test
