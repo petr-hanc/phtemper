@@ -32,10 +32,6 @@ public class PeriodsControllerUnitTest {
     private static TemperRepository repositMock;
     private static List<Temper> tempers;
 
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
 	@Before
 	public void setUp() throws Exception {
 		tempers = new ArrayList<Temper>();
