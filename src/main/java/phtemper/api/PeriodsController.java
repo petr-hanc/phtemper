@@ -30,15 +30,20 @@ import phtemper.TemperRepository;
 @RequestMapping(path="/periods",
                 produces="application/json")
 @CrossOrigin(origins="*")
-@RequiredArgsConstructor
 public class PeriodsController {
 	
-    PeriodCompute periodCompute;
+    private PeriodCompute periodCompute;
+    
+    PeriodsController(PeriodCompute periodCompute) {
+    	this.periodCompute = periodCompute;
+    }
     
     /** For testing purposes */
+    /*
     PeriodsController(TemperRepository repository) {
     	periodCompute = new PeriodCompute(repository);
     }
+    */
 	
 	@GetMapping("/period")
 	public ResponseEntity<PeriodD> getLongestPeriod(@RequestParam Float lowTemp, @RequestParam Float hiTemp) {
