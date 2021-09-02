@@ -1,6 +1,7 @@
 package phtemper;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertTrue;
 
@@ -23,6 +24,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -80,6 +82,7 @@ public class PeriodComputeIntegrTest {
         HttpEntity<String> entity = new HttpEntity<String>(null, headers);
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/periods/period?lowTemp=15&hiTemp=25"), HttpMethod.GET, entity, String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
         String expected = "{\"fromDate\":\"2021-08-15\",\"toDate\":\"2021-08-25\"}";
         System.err.println(response);	// DEBUG
         JSONAssert.assertEquals(expected, response.getBody(), false);
@@ -90,6 +93,7 @@ public class PeriodComputeIntegrTest {
         HttpEntity<String> entity = new HttpEntity<String>(null, headers);
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/periods/periodTime?lowTemp=15&hiTemp=25&fromTime=08:00&toTime=12:00"), HttpMethod.GET, entity, String.class);
+        assertThat(response.getStatusCode(), is(HttpStatus.OK));
         String expected = "{\"fromDate\":\"2021-08-04\",\"toDate\":\"2021-08-25\"}";
         System.err.println(response);	// DEBUG
         JSONAssert.assertEquals(expected, response.getBody(), false);
