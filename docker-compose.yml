@@ -1,0 +1,17 @@
+version: "3.8"
+
+services:
+   phtemper:
+     build:
+       dockerfile: Dockerfile
+       context: .
+     image: phtemper
+     container_name: phtemper-container
+     ports:
+       - 8080:8080
+       - 9092:9092
+     volumes:
+       - phtemper-db:/db
+
+volumes:
+   phtemper-db:
