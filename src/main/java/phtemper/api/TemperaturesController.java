@@ -43,44 +43,28 @@ public class TemperaturesController {
 	
 	@GetMapping("/{id}")
 	public ResponseEntity<Temper> getTemper(@PathVariable("id") String id) { 
-		try {
-			Long idLong = Long.valueOf(id);
-			Temper temper = repository.findById(idLong)
-					.orElseThrow(() -> new IllegalArgumentException("Invalid temperature id: " + idLong));
-			return ResponseEntity.ok(temper);
-		} 
-		catch (IllegalArgumentException e) {
-			//System.err.println(e.getMessage()); // debug
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}
+		Long idLong = Long.valueOf(id);
+		Temper temper = repository.findById(idLong)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid temperature id: " + idLong));
+		return ResponseEntity.ok(temper);
 	}
 	
 	@PatchMapping(path="/{id}", consumes="application/json")
-	public ResponseEntity<Temper> updateTemper(@PathVariable("id") Long id, @RequestBody Temper patch) {
-		try {
-			Temper temper = repository.findById(id)
-					.orElseThrow(() -> new IllegalArgumentException("Invalid temperature id: " + id));
-			if (patch.getTimeStamp() != null)
-				temper.setTimeStamp(patch.getTimeStamp());
-			if (patch.getTemper() != null)
-				temper.setTemper(patch.getTemper());
-			return ResponseEntity.ok(repository.save(temper));
-		}
-		catch (IllegalArgumentException e) {
-			//System.err.println(e.getMessage()); // debug
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}
+	public ResponseEntity<Temper> updateTemper(@PathVariable("id") String id, @RequestBody Temper patch) {
+		Long idLong = Long.valueOf(id);
+		Temper temper = repository.findById(idLong)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid temperature id: " + idLong));
+		if (patch.getTimeStamp() != null)
+			temper.setTimeStamp(patch.getTimeStamp());
+		if (patch.getTemper() != null)
+			temper.setTemper(patch.getTemper());
+		return ResponseEntity.ok(repository.save(temper));
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<Void> delTemper(@PathVariable("id") Long id) {
-		try {
-			repository.deleteById(id);
-			return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-		} 
-		catch (EmptyResultDataAccessException e) {
-			System.err.println(e.getMessage()); // debug
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-		}
+	public ResponseEntity<Void> delTemper(@PathVariable("id") String id) {
+		Long idLong = Long.valueOf(id);
+		repository.deleteById(idLong);
+		return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
 	}
 }
