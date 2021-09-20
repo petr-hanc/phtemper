@@ -42,14 +42,15 @@ public class TemperaturesController {
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<Temper> getTemper(@PathVariable("id") Long id) {
+	public ResponseEntity<Temper> getTemper(@PathVariable("id") String id) { 
 		try {
-			Temper temper = repository.findById(id)
-					.orElseThrow(() -> new IllegalArgumentException("Invalid temperature id: " + id));
+			Long idLong = Long.valueOf(id);
+			Temper temper = repository.findById(idLong)
+					.orElseThrow(() -> new IllegalArgumentException("Invalid temperature id: " + idLong));
 			return ResponseEntity.ok(temper);
 		} 
 		catch (IllegalArgumentException e) {
-			System.err.println(e.getMessage()); // debug
+			//System.err.println(e.getMessage()); // debug
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
@@ -66,7 +67,7 @@ public class TemperaturesController {
 			return ResponseEntity.ok(repository.save(temper));
 		}
 		catch (IllegalArgumentException e) {
-			System.err.println(e.getMessage()); // debug
+			//System.err.println(e.getMessage()); // debug
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		}
 	}
