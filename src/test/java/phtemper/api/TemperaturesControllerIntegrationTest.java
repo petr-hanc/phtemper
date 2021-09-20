@@ -1,8 +1,8 @@
 package phtemper.api;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,11 +21,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 
 import phtemper.Temper;
 import phtemper.TemperRepository;
@@ -105,10 +105,17 @@ public class TemperaturesControllerIntegrationTest {
         // System.err.println(response);	// DEBUG
         JSONAssert.assertEquals(expected, response.getBody(), false);
 	}
+	
+	@Test
+	public void testGetTemper_nonExistentId_badRequest() throws Exception {
+		ResponseEntity<String> response = restTemplate.exchange(
+		          createURLWithPort("/temperatures/60000"), HttpMethod.GET, request, String.class);
+		assertThat(response.getStatusCode(), is(HttpStatus.BAD_REQUEST));
+	}
 
 	@Test
 	@Sql(scripts="classpath:cleanup.sql",executionPhase=Sql.ExecutionPhase.AFTER_TEST_METHOD)
-	public void testUpdateTemper() throws Exception {
+	public void testUpdateTemperPatch() throws Exception {
 		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
 		tempers.add(new Temper(LocalDateTime.parse("2105-12-31T11:30:00"), -9f));
 		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T00:00:01"), 5.01f));
@@ -126,9 +133,8 @@ public class TemperaturesControllerIntegrationTest {
         newTemper.setId(2L);
         newTemper.setTimeStamp(LocalDateTime.parse("2105-12-31T11:30:00"));
         assertThat(temperReceived, equalTo(newTemper));
-        
 	}
-
+	
 	@Test
 	@Sql(scripts="classpath:cleanup.sql",executionPhase=Sql.ExecutionPhase.AFTER_TEST_METHOD)
 	public void testDelTemper() throws Exception {
@@ -145,6 +151,13 @@ public class TemperaturesControllerIntegrationTest {
         Temper restTemper = repository.findAll().get(0);
         assertThat(restTemper.getTimeStamp(), equalTo(LocalDateTime.parse("2105-12-31T11:30:00")));
         assertThat(restTemper.getTemper(), equalTo(-9f));
+	}
+	
+	@Test
+	public void testDelTemper_nonExistentId_badRequest() throws Exception {
+		ResponseEntity<String> response = restTemplate.exchange(
+		          createURLWithPort("/temperatures/60000"), HttpMethod.DELETE, request, String.class);
+		assertThat(response.getStatusCode(), is(HttpStatus.BAD_REQUEST));
 	}
 
 }

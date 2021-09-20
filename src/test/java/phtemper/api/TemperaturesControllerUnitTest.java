@@ -134,19 +134,6 @@ public class TemperaturesControllerUnitTest {
 		verify(repositMock);
 	}
 	
-	@Test
-	public void testGetTemper_nonExistentId_badRequest() throws Exception {
-		expect(repositMock.findById(60000L)).andReturn(Optional.ofNullable(null));
-		replay(repositMock);
-		mockMvc.perform(get("/temperatures/60000")).andExpect(status().isBadRequest());
-		verify(repositMock);
-		
-		/*
-		//MvcResult result = this.mockMvc.perform(get("/temperatures/60000")).andExpect(status().isBadRequest()).andReturn();
-		String resultStr = result.getResponse().getContentAsString();
-		System.err.println(resultStr);
-		*/
-	}
 
 	@Test
 	public void testUpdateTemper() throws Exception {
@@ -176,37 +163,12 @@ public class TemperaturesControllerUnitTest {
 	}
 	
 	@Test
-	public void testUpdateTemper_nonExistentId_badRequest() throws Exception {
-		expect(repositMock.findById(60000L)).andReturn(Optional.ofNullable(null));
-		replay(repositMock);
-		Temper temperNew = new Temper(LocalDateTime.parse("2106-02-28T22:30:00"), 10.02f);
-		mockMvc.perform(
-				patch("/temperatures/60000")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString(temperNew))
-				.accept(MediaType.APPLICATION_JSON)
-			)
-			.andExpect(status().isBadRequest());
-		verify(repositMock);
-	}
-
-	@Test
 	public void testDelTemper() throws Exception {
 		repositMock.deleteById(1L);
 		expectLastCall();
 		replay(repositMock);
 		
 		this.mockMvc.perform(delete("/temperatures/1")).andExpect(status().isNoContent());
-		verify(repositMock);
-	}
-	
-	@Test
-	public void testDelTemper_nonExistentId_badRequest() throws Exception {
-		repositMock.deleteById(60000L);
-		expectLastCall().andThrow(new EmptyResultDataAccessException(1));
-		replay(repositMock);
-		
-		this.mockMvc.perform(delete("/temperatures/60000")).andExpect(status().isBadRequest());
 		verify(repositMock);
 	}
 	
