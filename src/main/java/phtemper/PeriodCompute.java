@@ -18,12 +18,6 @@ public class PeriodCompute {
 	
     private final TemperRepository repository;
 	
-	/* auxiliary variables for computation */
-	private PeriodD periodMax;		// longest period in temperature range
-	private long periodMaxLength;		// length in days
-	private Temper oldestInRange, newestInRange;
-	private boolean withinPeriod;	// true if period was found and hasn't finished yet
-
 	/** Returns longest period (starting date and ending date) in temperatures stored in repository 
 	 * with all temperatures between lowTemp and hiTemp (included).
 	 * If no such temperature is found then it returns null. */
@@ -57,51 +51,64 @@ public class PeriodCompute {
 	 * If no such temperature is found then it returns null.
 	 * If there are more longest periods it returns the oldest one. */
 	PeriodD longestPeriodInList(Float lowTemp, Float hiTemp, List<Temper> temperatures) {
-		periodMax = null;
-		periodMaxLength = -1L;
-		oldestInRange = null;
-		newestInRange = null;
-		withinPeriod = false;
+		ComputeVars computeVars = new ComputeVars();	// auxiliary variables for computation
+		
 		if (lowTemp == null || hiTemp == null || temperatures == null || lowTemp > hiTemp)
 			return null;
 		ArrayList<Temper> sortedTemps = new ArrayList<Temper>(temperatures);
 		Collections.sort(sortedTemps);	// sort by date
 		for (Temper temper: sortedTemps) {
 			if (temper.getTemper() >= lowTemp && temper.getTemper() <= hiTemp) {	// temper. is in range
-				if (oldestInRange == null) {	// new period has started
-					oldestInRange = temper;
-					newestInRange = temper;
-					withinPeriod = true;
+				if (computeVars.oldestInRange == null) {	// new period has started
+					computeVars.oldestInRange = temper;
+					computeVars.newestInRange = temper;
+					computeVars.withinPeriod = true;
 				}
 				else 		// period continues
-					newestInRange = temper;
+					computeVars.newestInRange = temper;
 			} else {	// temper. out of range
-				if (withinPeriod == true) 
-					finishPeriod();
+				if (computeVars.withinPeriod == true) 
+					finishPeriod(computeVars);
 			}
 		}
-		if (withinPeriod == true) 
-			finishPeriod();
-		return periodMax;
+		if (computeVars.withinPeriod == true) 
+			finishPeriod(computeVars);
+		return computeVars.periodMax;
 	}
 	
-	/** Finish a period of passing temperatures that was found. Changes member variables. */
-	private void finishPeriod() {
+	/** Finish a period of fitting temperatures that was found.
+	 * @param computeVars auxiliary variables for computation */
+	private void finishPeriod(ComputeVars computeVars) {
 		PeriodD period = new PeriodD();
 		ChronoPeriod periodChrono;	// interval between dates
 		long periodLength = 0;		// length in days
-		period.setFromDate(oldestInRange.getTimeStamp().toLocalDate());
-		period.setToDate(newestInRange.getTimeStamp().toLocalDate());
+		period.setFromDate(computeVars.oldestInRange.getTimeStamp().toLocalDate());
+		period.setToDate(computeVars.newestInRange.getTimeStamp().toLocalDate());
 		periodChrono = Period.between(period.getFromDate(), period.getToDate());
 		periodLength = periodChrono.get(ChronoUnit.DAYS);
-		if (periodLength > periodMaxLength) {	// this period has been the longest one
-			periodMax = period;
-			periodMaxLength = periodLength;
+		if (periodLength > computeVars.periodMaxLength) {	// this period has been the longest one
+			computeVars.periodMax = period;
+			computeVars.periodMaxLength = periodLength;
 		}
-		withinPeriod = false;
+		computeVars.withinPeriod = false;
+		computeVars.oldestInRange = null;
+		computeVars.newestInRange = null;
+	}
+}	
+
+/* Auxiliary variables for computation used in 2 methods */
+class ComputeVars {
+	PeriodD periodMax;		// longest period in temperature range
+	long periodMaxLength;	// length of the longest period in days
+	Temper oldestInRange;	// oldest temperature in uninterrupted line (in temperature range)
+	Temper newestInRange;	// newest temperature in uninterrupted line (in temperature range)
+	boolean withinPeriod;	// true if period was found and hasn't finished yet
+	
+	ComputeVars() {
+		periodMax = null;
+		periodMaxLength = -1L;
 		oldestInRange = null;
 		newestInRange = null;
+		withinPeriod = false;
 	}
-	
-
-}	// class
+}
