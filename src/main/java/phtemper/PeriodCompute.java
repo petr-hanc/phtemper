@@ -31,20 +31,8 @@ public class PeriodCompute {
 	 * toTime (included) are considered, all others are ignored.
 	 * If no such temperature is found then it returns null. */
 	public PeriodD longestPeriodWithTime(Float lowTemp, Float hiTemp, LocalTime fromTime, LocalTime toTime) {
-		ArrayList<Temper> temperatures = new ArrayList<Temper>(repository.findAll());
-		ArrayList<Temper> tempersInTime = new ArrayList<Temper>();
-		try {
-			for (Temper temper: temperatures) {
-				LocalTime time = temper.getTimeStamp().toLocalTime();
-				if (time.compareTo(fromTime) >= 0 && time.compareTo(toTime) <= 0) 
-					tempersInTime.add(temper);
-			}
-			return longestPeriodInList(lowTemp, hiTemp, tempersInTime);
-		}
-		catch (NullPointerException e) {
-			e.printStackTrace();
-			return null;
-		}
+		ArrayList<Temper> tempersInTime = new ArrayList<Temper>(repository.findByTimeRangeOrder(fromTime, toTime));
+		return longestPeriodInList(lowTemp, hiTemp, tempersInTime);
 	}
 	
 	/** Returns longest period (starting date and ending date) in temperatures list with all temperatures between lowTemp and hiTemp (included).

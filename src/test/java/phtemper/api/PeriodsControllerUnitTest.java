@@ -9,6 +9,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,9 +71,25 @@ public class PeriodsControllerUnitTest {
 			.andExpect(status().isNoContent());
 		verify(repositMock);
 	}
+	
+	public void setUpWithTime() throws Exception {
+		tempers = new ArrayList<Temper>();
+		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
+		tempers.add(new Temper(LocalDateTime.parse("2105-12-31T11:30:00"), -9f));
+		tempers.add(new Temper(LocalDateTime.parse("2106-01-03T10:00:00"), 10f));
+		tempers.add(new Temper(LocalDateTime.parse("2106-01-05T10:00:00"), -10.01f));
+		repositMock = createStrictMock("mockRepo", TemperRepository.class);
+		expect(repositMock.findByTimeRangeOrder(LocalTime.parse("10:00"), LocalTime.parse("14:00")))
+			.andReturn(tempers);
+		replay(repositMock);
+		mockMvc = MockMvcBuilders.standaloneSetup(
+					new PeriodsController(new PeriodCompute(repositMock))
+				).build();
+	}
 
 	@Test
 	public void testGetLongestPeriodWithTime() throws Exception {
+		setUpWithTime();
 		mockMvc.perform(get("/periods/periodTime?lowTemp=-10&hiTemp=10&fromTime=10:00&toTime=14:00"))
 			.andExpect(status().isOk())
 			.andExpect(content().contentType(CONTENT_TYPE))
@@ -82,8 +99,20 @@ public class PeriodsControllerUnitTest {
 		verify(repositMock);
 	}
 	
+	public void setUpEmptyTempersWithTime() throws Exception {
+		tempers = new ArrayList<Temper>();
+		repositMock = createStrictMock("mockRepo", TemperRepository.class);
+		expect(repositMock.findByTimeRangeOrder(LocalTime.parse("14:00"), LocalTime.parse("10:00")))
+			.andReturn(tempers);
+		replay(repositMock);
+		mockMvc = MockMvcBuilders.standaloneSetup(
+					new PeriodsController(new PeriodCompute(repositMock))
+				).build();
+	}
+	
 	@Test
 	public void testGetLongestPeriodWithTime_outOfTimeRange_noContent() throws Exception {
+		setUpEmptyTempersWithTime();
 		mockMvc.perform(get("/periods/periodTime?lowTemp=-10&hiTemp=10&fromTime=14:00&toTime=10:00"))
 			.andExpect(status().isNoContent());
 		verify(repositMock);
@@ -91,6 +120,7 @@ public class PeriodsControllerUnitTest {
 	
 	@Test
 	public void testGetLongestPeriodWithTime_badFromTime_badRequest() throws Exception {
+		setUpEmptyTempersWithTime();
 		mockMvc.perform(get("/periods/periodTime?lowTemp=5&hiTemp=10&fromTime=blabla&toTime=10:00"))
 			.andExpect(status().isBadRequest());
 	}

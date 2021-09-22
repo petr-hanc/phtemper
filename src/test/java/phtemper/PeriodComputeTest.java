@@ -6,7 +6,6 @@ import static org.junit.Assert.assertNull;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,36 +107,6 @@ public class PeriodComputeTest {
 	public void testLongestPeriodInList_nullInputs() {
 		period = periodCompute.longestPeriodInList(null, null, null);
 		assertNull(period);
-	}
-
-	@Test
-	public void testLongestPeriodWithTime() {
-		periodCompute = new PeriodCompute(repositMock);
-		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
-		tempers.add(new Temper(LocalDateTime.parse("2105-12-31T11:30:00"), -9f));
-		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T00:00:01"), 5f));
-		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T15:00:00"), 30f));
-		tempers.add(new Temper(LocalDateTime.parse("2106-01-03T10:00:00"), 10f));
-		tempers.add(new Temper(LocalDateTime.parse("2106-01-05T10:00:00"), -10.01f));
-		
-		period = periodCompute.longestPeriodWithTime(-10f, 10f, LocalTime.parse("10:00:00"), LocalTime.parse("14:00:00"));
-		assertThat(period, equalTo(new PeriodD(LocalDate.parse("2105-12-31"), LocalDate.parse("2106-01-03"))));
-		EasyMock.verify(repositMock);
-	}
-	
-	@Test
-	public void testLongestPeriodWithTime_longerTime() {
-		periodCompute = new PeriodCompute(repositMock);
-		tempers.add(new Temper(LocalDateTime.parse("2105-12-15T11:30:00"), -15f));
-		tempers.add(new Temper(LocalDateTime.parse("2105-12-31T11:30:00"), -9f));
-		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T00:00:01"), 5f));
-		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T15:00:00"), 30f));
-		tempers.add(new Temper(LocalDateTime.parse("2106-01-03T10:00:00"), 10f));
-		tempers.add(new Temper(LocalDateTime.parse("2106-01-05T10:00:00"), -10.01f));
-		
-		period = periodCompute.longestPeriodWithTime(-10f, 10f, LocalTime.parse("10:00:00"), LocalTime.parse("15:00:00"));
-		assertThat(period, equalTo(new PeriodD(LocalDate.parse("2105-12-31"), LocalDate.parse("2105-12-31"))));
-		EasyMock.verify(repositMock);
 	}
 
 }

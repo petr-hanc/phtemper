@@ -2,6 +2,7 @@ package phtemper;
 
 import java.sql.SQLException;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,7 +33,14 @@ public class PhtemperApplication extends SpringBootServletInitializer implements
 	
 	@Override
 	public void run(String... args) throws Exception {
-		// resetRepositoryDefaultData();
+		//resetRepositoryDefaultData();
+		
+		/* //debug
+		List<Temper> table = repository.findByTimeRangeOrder(LocalTime.parse("08:00:00"), LocalTime.parse("12:00:00"));
+		for (Temper temper : table) {
+			System.out.println(temper);
+		}
+		*/
 	}
 	
 	public void resetRepositoryDefaultData() {
