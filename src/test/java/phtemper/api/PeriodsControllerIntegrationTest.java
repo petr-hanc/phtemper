@@ -73,7 +73,6 @@ public class PeriodsControllerIntegrationTest {
           createURLWithPort("/periods/period?lowTemp=15&hiTemp=25"), HttpMethod.GET, entity, String.class);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         String expected = "{\"fromDate\":\"2021-08-15\",\"toDate\":\"2021-08-25\"}";
-        //System.err.println(response);	// DEBUG
         JSONAssert.assertEquals(expected, response.getBody(), false);
     }  
     
@@ -82,7 +81,6 @@ public class PeriodsControllerIntegrationTest {
 		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/periods/period?lowTemp=38&hiTemp=40"), HttpMethod.GET, entity, String.class);
-        //System.err.println(response);	// DEBUG
         assertThat(response.getStatusCode(), is(HttpStatus.NO_CONTENT));
 	}
     
@@ -101,7 +99,6 @@ public class PeriodsControllerIntegrationTest {
 		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/periods/periodTime?lowTemp=-10&hiTemp=10&fromTime=14:00&toTime=10:00"), HttpMethod.GET, entity, String.class);
-        //System.err.println(response);	// DEBUG
         assertThat(response.getStatusCode(), is(HttpStatus.NO_CONTENT));
 	}
 	
@@ -110,7 +107,6 @@ public class PeriodsControllerIntegrationTest {
 		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/periods/periodTime?lowTemp=blabla&hiTemp=10&fromTime=14:00&toTime=10:00"), HttpMethod.GET, entity, String.class);
-        //System.err.println(response);	// DEBUG
         assertThat(response.getStatusCode(), is(HttpStatus.BAD_REQUEST));
 	}
 	
@@ -119,7 +115,6 @@ public class PeriodsControllerIntegrationTest {
 		HttpEntity<String> entity = new HttpEntity<String>(null, headers);
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/periods/periodTime?lowTemp=5&hiTemp=10&fromTime=blabla&toTime=10:00"), HttpMethod.GET, entity, String.class);
-        //System.err.println(response);	// DEBUG
         assertThat(response.getStatusCode(), is(HttpStatus.BAD_REQUEST));
 	}
 

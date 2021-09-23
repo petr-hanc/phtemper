@@ -26,13 +26,6 @@ public class PeriodsController {
     	this.periodCompute = periodCompute;
     }
     
-    /** For testing purposes */
-    /*
-    PeriodsController(TemperRepository repository) {
-    	periodCompute = new PeriodCompute(repository);
-    }
-    */
-	
 	@GetMapping("/period")
 	public ResponseEntity<PeriodD> getLongestPeriod(@RequestParam String lowTemp, @RequestParam String hiTemp) {
 		Float lowTempFloat = Float.valueOf(lowTemp);

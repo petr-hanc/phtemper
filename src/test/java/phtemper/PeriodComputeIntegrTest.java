@@ -62,16 +62,12 @@ public class PeriodComputeIntegrTest {
     
 	@Test
 	public void testLongestPeriodDb() {
-		System.out.println("testLongestPeriod"); // debug
-		System.out.println(repository.findAll());// debug
 		PeriodD period = periodCompute.longestPeriod(15F, 25F);
 		assertThat(period, equalTo(new PeriodD(LocalDate.parse("2021-08-15"), LocalDate.parse("2021-08-25"))));
 	}
 	
 	@Test
 	public void testLongestPeriodWithTimeDb() {
-		System.out.println("testLongestPeriodWithTime()");// debug
-		//System.out.println(repository.findAll());// debug
 		PeriodD period = periodCompute.longestPeriodWithTime(15F, 25F, LocalTime.parse("08:00"), LocalTime.parse("12:00"));		
 		assertThat(period, equalTo(new PeriodD(LocalDate.parse("2021-08-04"), LocalDate.parse("2021-08-25"))));
 	}
@@ -80,7 +76,6 @@ public class PeriodComputeIntegrTest {
 	public void testLongestPeriodDb_2LongestPeriods_olderOne() {
 		prepareTestContext_make2PeriodsSameLength();
 		PeriodD period = periodCompute.longestPeriod(15F, 25F);
-		//System.out.println(period);
 		assertThat(period, equalTo(new PeriodD(LocalDate.parse("2021-08-04"), LocalDate.parse("2021-08-14"))));
 	}
 	

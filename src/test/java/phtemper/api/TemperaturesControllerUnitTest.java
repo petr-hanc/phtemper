@@ -3,10 +3,8 @@ package phtemper.api;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,10 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/*
-@RunWith(SpringRunner.class)
-@WebMvcTest(TemperaturesController.class)
-*/
 public class TemperaturesControllerUnitTest {
 	
 	private MockMvc mockMvc;
@@ -76,15 +70,7 @@ public class TemperaturesControllerUnitTest {
 				"[{\"id\":1,\"timeStamp\":\"2105-12-15T11:30:00\",\"temper\":-15.0},{\"id\":2,\"timeStamp\":\"2105-12-31T11:30:00\",\"temper\":-9.0},"
 				+ "{\"id\":3,\"timeStamp\":\"2106-01-01T00:00:01\",\"temper\":5.01}]"
 				));
-		
-		/*
-		MvcResult result = this.mockMvc.perform(get("/temperatures")).andExpect(status().isOk()).andReturn();
-		String resultStr = result.getResponse().getContentAsString();
-		System.err.println(resultStr);
-		*/
-		
 		verify(repositMock);
-		
 	}
 
 	@Test
@@ -106,20 +92,6 @@ public class TemperaturesControllerUnitTest {
 					"{\"id\":null,\"timeStamp\":\"2105-12-15T11:30:00\",\"temper\":-15.0}"
 					));
 		verify(repositMock);
-		
-		/*
-		  		String resultStr = mockMvc.perform(
-				post("/temperatures")
-				.contentType(MediaType.APPLICATION_JSON)
-				.content(asJsonString(temper))
-				.accept(MediaType.APPLICATION_JSON)
-			)
-			.andExpect(status().isCreated())
-	        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-	        .andReturn().getResponse().getContentAsString()
-			;
-		System.err.println(resultStr);
-		 */
 	}
 
 	@Test

@@ -64,14 +64,12 @@ public class TemperaturesControllerIntegrationTest {
 		tempers.add(new Temper(LocalDateTime.parse("2105-12-31T11:30:00"), -9f));
 		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T00:00:01"), 5.01f));
 		repository.saveAll(tempers);
-		//System.err.println(repository.findAll());	// DEBUG
 		
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/temperatures"), HttpMethod.GET, request, String.class);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         String expected = "[{\"id\":1,\"timeStamp\":\"2105-12-15T11:30:00\",\"temper\":-15.0},{\"id\":2,\"timeStamp\":\"2105-12-31T11:30:00\",\"temper\":-9.0},"
 				+ "{\"id\":3,\"timeStamp\":\"2106-01-01T00:00:01\",\"temper\":5.01}]";
-        //System.err.println(response);	// DEBUG
         JSONAssert.assertEquals(expected, response.getBody(), false);
 	}
 	
@@ -96,13 +94,11 @@ public class TemperaturesControllerIntegrationTest {
 		tempers.add(new Temper(LocalDateTime.parse("2105-12-31T11:30:00"), -9f));
 		tempers.add(new Temper(LocalDateTime.parse("2106-01-01T00:00:01"), 5.01f));
 		repository.saveAll(tempers);
-		// System.err.println(repository.findAll());	// debug
 		
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/temperatures/3"), HttpMethod.GET, request, String.class);
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         String expected = "{\"id\":3,\"timeStamp\":\"2106-01-01T00:00:01\",\"temper\":5.01}";
-        // System.err.println(response);	// DEBUG
         JSONAssert.assertEquals(expected, response.getBody(), false);
 	}
 	
@@ -145,8 +141,6 @@ public class TemperaturesControllerIntegrationTest {
         ResponseEntity<String> response = restTemplate.exchange(
           createURLWithPort("/temperatures/1"), HttpMethod.DELETE, request, String.class);
         assertThat(response.getStatusCode(), is(HttpStatus.NO_CONTENT));
-        //System.err.println(response);	// DEBUG
-        //System.err.println(repository.findAll());	// debug
         assertThat(repository.count(), equalTo(1L));
         Temper restTemper = repository.findAll().get(0);
         assertThat(restTemper.getTimeStamp(), equalTo(LocalDateTime.parse("2105-12-31T11:30:00")));

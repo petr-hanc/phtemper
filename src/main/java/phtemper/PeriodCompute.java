@@ -84,7 +84,7 @@ public class PeriodCompute {
 	}
 }	
 
-/* Auxiliary variables for computation used in 2 methods */
+/** Auxiliary variables for computation used in 2 methods */
 class ComputeVars {
 	PeriodD periodMax;		// longest period in temperature range
 	long periodMaxLength;	// length of the longest period in days

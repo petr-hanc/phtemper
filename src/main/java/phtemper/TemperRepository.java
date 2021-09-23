@@ -16,9 +16,6 @@ public interface TemperRepository extends JpaRepository<Temper, Long> {
 			+ "WHERE CAST(time_stamp AS time) BETWEEN ?1 AND ?2 "
 			+ "ORDER BY time_stamp")
 	public List<Temper> findByTimeRangeOrder(LocalTime fromTime, LocalTime toTime);
-
-	//DELETE FROM MyClass mc WHERE DATE(fecha) =:fecha;
-
 }
 
 
