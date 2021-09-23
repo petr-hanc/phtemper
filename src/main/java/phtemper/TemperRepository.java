@@ -7,9 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+/** Repository for storing temperatures */
 @Repository
 public interface TemperRepository extends JpaRepository<Temper, Long> {
 	
+	/** Find temperatures in certain time range */
 	@Query(nativeQuery=true, value =
 			"SELECT id, temper, time_stamp "
 			+ "FROM PUBLIC.TEMPER "

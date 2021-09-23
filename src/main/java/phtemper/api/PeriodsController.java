@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import phtemper.PeriodCompute;
 import phtemper.PeriodD;
 
+/** REST API controller for searching periods with temperatures in ceratin range */
 @RestController
 @RequestMapping(path="/periods",
                 produces="application/json")

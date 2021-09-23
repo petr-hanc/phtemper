@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 import org.junit.Test;
 
+/** Unit tests of Temper class */
 public class TemperTest {
 
 	@Test

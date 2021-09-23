@@ -14,6 +14,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+/** Unit tests of PeriodCompute class */
+
 public class PeriodComputeTest {
 	
     private static PeriodCompute periodCompute;

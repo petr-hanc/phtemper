@@ -15,12 +15,9 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import phtemper.PeriodCompute;
 import phtemper.Temper;

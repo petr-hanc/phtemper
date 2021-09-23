@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 
 import lombok.Data;
 
+/** Pairs of time stamps and temperatures stored in DB */
 @Data
 @Entity
 @Table(name = "temper")

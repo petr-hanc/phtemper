@@ -19,6 +19,8 @@ import lombok.RequiredArgsConstructor;
 import phtemper.Temper;
 import phtemper.TemperRepository;
 
+/** REST controller for CRUD operations with pairs temperature - time stamp */
+
 @RestController
 @RequestMapping(path="/temperatures",
                 produces="application/json")
@@ -28,11 +30,13 @@ public class TemperaturesController {
 	
 	private final TemperRepository repository;
 	
+	/** List all temperatures in DB */
 	@GetMapping(produces="application/json")
 	public List<Temper> allTempers() {
 		return repository.findAll();
 	}
 	
+	/** Add new temperature */
 	@PostMapping(consumes="application/json")
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<Temper> addTemper(@RequestBody Temper temper) {
@@ -40,6 +44,7 @@ public class TemperaturesController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(temper);
 	}
 	
+	/** Get one temperature */ 
 	@GetMapping("/{id}")
 	public ResponseEntity<Temper> getTemper(@PathVariable("id") String id) { 
 		Long idLong = Long.valueOf(id);
@@ -48,6 +53,7 @@ public class TemperaturesController {
 		return ResponseEntity.ok(temper);
 	}
 	
+	/** Update a temperature */
 	@PatchMapping(path="/{id}", consumes="application/json")
 	public ResponseEntity<Temper> updateTemper(@PathVariable("id") String id, @RequestBody Temper patch) {
 		Long idLong = Long.valueOf(id);
@@ -60,6 +66,7 @@ public class TemperaturesController {
 		return ResponseEntity.ok(repository.save(temper));
 	}
 	
+	/** Delete a temperature */
 	@DeleteMapping("/{id}")
 	public ResponseEntity<Void> delTemper(@PathVariable("id") String id) {
 		Long idLong = Long.valueOf(id);

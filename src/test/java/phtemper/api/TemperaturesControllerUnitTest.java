@@ -23,6 +23,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/** Unit tests of TemperaturesController */
+
 public class TemperaturesControllerUnitTest {
 	
 	private MockMvc mockMvc;

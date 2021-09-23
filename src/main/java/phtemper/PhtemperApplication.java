@@ -22,9 +22,7 @@ public class PhtemperApplication extends SpringBootServletInitializer implements
     @Autowired
     PeriodCompute periodCompute;
     @Value("${phtemper.startH2TcpServer}")
-    private String startH2TcpServer;
-    
-    
+    private String startH2TcpServer;	// when true, start H2 DB TCP server
     
 	public static void main(String[] args) {
 		SpringApplication.run(PhtemperApplication.class, args);
@@ -35,6 +33,7 @@ public class PhtemperApplication extends SpringBootServletInitializer implements
 		//resetRepositoryDefaultData();
 	}
 	
+	/** Save default data to database for demonstration purposes */
 	public void resetRepositoryDefaultData() {
 		repository.deleteAll();
 		List<Temper> tempers = new ArrayList<Temper>();
@@ -50,7 +49,8 @@ public class PhtemperApplication extends SpringBootServletInitializer implements
 		tempers.add(new Temper(LocalDateTime.parse("2021-08-27T11:30:00"), 35F));
 		repository.saveAll(tempers);
 	}
-		
+	
+	/** Run TCP server of H2 database to allow connection to DB from outside (not only from of this application) */
 	@Bean(destroyMethod = "stop")
     public Server h2TcpServer() throws SQLException {
 		Server srv = Server.createTcpServer("-tcp", "-tcpAllowOthers", "-tcpPort", "9092", "-tcpDaemon");

@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 
 import lombok.RequiredArgsConstructor;
 
+/** Class for searching the periods (starting date and ending date) of temperatures in certain temperature range */
+
 @Component
 @RequiredArgsConstructor
 public class PeriodCompute {

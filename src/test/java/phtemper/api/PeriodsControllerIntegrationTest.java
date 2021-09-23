@@ -30,6 +30,8 @@ import phtemper.TemperRepository;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource(locations = "classpath:application-integrationtest.properties")
 
+/** Integration test of PeriodsController */
+
 public class PeriodsControllerIntegrationTest {
 	
     @Autowired

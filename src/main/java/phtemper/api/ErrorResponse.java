@@ -2,6 +2,7 @@ package phtemper.api;
 
 import lombok.Data;
 
+/** REST API error message */
 @Data
 public class ErrorResponse {
 	

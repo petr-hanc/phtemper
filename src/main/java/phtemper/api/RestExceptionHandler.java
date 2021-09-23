@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+/** REST API - handle errors */
 @ControllerAdvice
 public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 	
+	/** Send HTTP status BAD_REQUEST and error message from exception ex */
 	private ResponseEntity<ErrorResponse> respondBadRequest(Exception ex) {
 		ErrorResponse error = new ErrorResponse();
 		
@@ -19,12 +21,13 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
 		
 	}
 	
-	/** Deletion of non-existent id */
+	/** Handle deletion of non-existent id error */
 	@ExceptionHandler
     protected ResponseEntity<ErrorResponse> handleException(EmptyResultDataAccessException ex) {
 		return respondBadRequest(ex);
 	}
 	
+	/** Handle other exceptions */
 	@ExceptionHandler
     protected ResponseEntity<ErrorResponse> handleException(Exception ex) {
 		return respondBadRequest(ex);
