@@ -1,7 +1,7 @@
 # phtemper
-Application for testing work with REST API, Java and Spring Boot. User can do CRUD operations with pairs time-temperature and get the longest period with temperatures in certain range.
+Application for testing work with REST API, Java and Spring Boot. User can do CRUD operations with pairs time-temperature and get the longest period (starting and ending date) with temperatures in certain range.
 
-Contains unit and integration tests (with JUnit 4, EasyMock, MockMvc and TestRestTemplate) and Docker config. files.
+Contains unit and integration tests (with JUnit 4, EasyMock, MockMvc and TestRestTemplate) and Docker configuration files.
 
 API documentation: https://phtemper.docs.apiary.io/.
 
@@ -13,6 +13,3 @@ Build command: mvnw package
 Run command: mvnw spring-boot:run
 
 Command for build and run in Docker container: docker-compose up
-
-
-
